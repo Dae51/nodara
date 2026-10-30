@@ -101,6 +101,15 @@ class FirebaseAuthDataSource implements AuthDataSource {
   Future<void> signOut() => _auth.signOut();
 
   @override
+  Future<void> sendPasswordReset({required String email}) async {
+    try {
+      await _auth.sendPasswordResetEmail(email: email);
+    } on FirebaseAuthException catch (e) {
+      throw AuthException(_mensajeDeError(e.code));
+    }
+  }
+
+  @override
   Future<void> updateUser(AppUser user) =>
       _users.doc(user.uid).set(user.toMap(), SetOptions(merge: true));
 

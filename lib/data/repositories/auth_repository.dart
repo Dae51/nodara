@@ -34,5 +34,8 @@ class AuthRepository {
 
   Future<void> signOut() => _dataSource.signOut();
 
+  Future<void> sendPasswordReset({required String email}) =>
+      _dataSource.sendPasswordReset(email: email.trim());
+
   Future<void> updateUser(AppUser user) => _dataSource.updateUser(user);
 }
