@@ -1,0 +1,71 @@
+rules_version = '2';
+
+// Reglas de seguridad de NODARA (ver PLAN.md §6).
+// Publicar con: Firebase Console → Firestore → Reglas, o `firebase deploy --only firestore:rules`.
+service cloud.firestore {
+  match /databases/{database}/documents {
+
+    function signedIn() {
+      return request.auth != null;
+    }
+
+    function isOwner(uid) {
+      return signedIn() && request.auth.uid == uid;
+    }
+
+    function isOrg() {
+      return signedIn()
+        && get(/databases/$(database)/documents/users/$(request.auth.uid)).data.rol == 'organizacion';
+    }
+
+    // Perfil: cada quien lee y edita el suyo; el rol no se puede cambiar.
+    match /users/{uid} {
+      allow read, create: if isOwner(uid);
+      allow update: if isOwner(uid)
+        && request.resource.data.rol == resource.data.rol;
+
+      // Avisos: el dueño los lee y solo puede marcarlos como leídos.
+      // Las organizaciones los crean al cambiar el estado de una postulación.
+      match /notifications/{notificationId} {
+        allow read: if isOwner(uid);
+        allow update: if isOwner(uid)
+          && request.resource.data.diff(resource.data).affectedKeys().hasOnly(['leida']);
+        allow create: if isOrg();
+      }
+    }
+
+    // Convocatorias: todos (con sesión) leen; solo la org dueña escribe.
+    match /opportunities/{opportunityId} {
+      allow read: if signedIn();
+      allow create: if isOrg() && request.resource.data.orgId == request.auth.uid;
+      allow update, delete: if isOrg() && resource.data.orgId == request.auth.uid;
+    }
+
+    // Postulaciones: las ve el voluntario y la org dueña de la convocatoria.
+    match /applications/{applicationId} {
+      allow read: if signedIn()
+        && (resource.data.userId == request.auth.uid
+            || resource.data.orgId == request.auth.uid);
+      allow create: if signedIn()
+        && request.resource.data.userId == request.auth.uid
+        && request.resource.data.estado == 'pendiente';
+      allow update: if signedIn()
+        && ((resource.data.userId == request.auth.uid
+             && request.resource.data.estado == 'retirado')
+            || resource.data.orgId == request.auth.uid);
+    }
+
+    // Puntos de donación: lectura con sesión; escritura de la org dueña.
+    match /donationPoints/{pointId} {
+      allow read: if signedIn();
+      allow create: if isOrg() && request.resource.data.orgId == request.auth.uid;
+      allow update, delete: if isOrg() && resource.data.orgId == request.auth.uid;
+    }
+
+    // Certificados: lectura pública por código (para validarlos).
+    match /certificates/{codigo} {
+      allow read: if true;
+      allow create: if signedIn() && request.resource.data.userId == request.auth.uid;
+    }
+  }
+}

@@ -1,0 +1,43 @@
+/// URLs de imágenes exportadas desde Google Stitch.
+///
+/// Pendiente (UI/UX): reemplazarlas por archivos en `assets/` para que la app
+/// funcione sin internet. Mientras tanto, todas viven en un solo lugar.
+abstract final class RemoteAssets {
+  static const logo =
+      'https://lh3.googleusercontent.com/aida/AEtjO1WMNPgKvEeUZYfuunnC_jd5tn4wOuQLmRxJ0gHuMNS2qW4JpuDAepPSdF-Mzf-TAp4WaHPklp9AfC7rA5xKmJ3rZsS-910LLJyrfcy9Ey-O0Ufg9v5r7SLOJv4wC2gMgoD64dt8tBtwGEYq-pJweylS5SJLHQGLdG2w1SMY91wDw4WC0iOZMEAfIg7fDM2ogNw2yo_yn8_shcScXI20cYzniS1QsDEdj6tEgMGGNtkN1JuOnIJl5Nz4JE8';
+  static const sofiaAvatar =
+      'https://lh3.googleusercontent.com/aida-public/AB6AXuAZwnUdUVyY5xV1x4kRnHNEJVPOAHZZl_TWwKeA1bBI-Nlsrua3M9eyHCpKSjzrgKK3Or3ufpTWc5cQb5Nrv5cw6wf5gxQOEti_KZwqMuYWv3GLA0ftBhVAvtKOhtAUtvwFPGbOxZ2TiEB9F-M1N9FdY4AgOWhvlKpGoqWxzGjEBSfOwdawWQ-XQwra_LGIz6O-kNZ03Weo-v9I5s_Rq-RMupv9HgEH9WYoWTLhsASND35ea-4e1JcA3A';
+
+  static const onboardingHero =
+      'https://lh3.googleusercontent.com/aida-public/AB6AXuDc28gWUpWgGTL9omEze1TRhReKPCaLfKxx9q_vJF0wM6d8SQA6p71hZKH3iyn2X0FGIbMUMfRrzuIxnE_k4dS2T_-UkeOGATDkaOgH_V3rnyabOcXG6raYNVtUxSM8JY2-ne22YAuSwdjzPfCUeXVNS7p3JOx_7SLmuD7vEagvWee7sDTUjhR-m-mTmF8Hsr9qyu7lYkgZU6usNmYmn-lGkckLt1Dj6EOscQ2APIBEurwp4wd0H0QW6Q';
+
+  static const tutoriasImage =
+      'https://lh3.googleusercontent.com/aida-public/AB6AXuCucdI0M5bReCybvjRXdBe1aboCcaPuPPnPh-o4kqRzBxA5V6scEIcvSW4QKD4EoSlnFGsO64ywKhuLNk917OBdFl7Dcv71N_rgVmlGqWzpQ2nL5_yVkOjBYkTyMErhwUx3uB3pjE9enLOJEQnDdxT2ZvckSJ5WuVjslEX4HSoQRUKrESlcK3G7Y4fz1a5Fg2fvNYy5OfSuInC5_bHrWbeLj-elnv21oomu7GxEJMPn9YRYKuLqtLvx8g';
+  static const reforestacionImage =
+      'https://lh3.googleusercontent.com/aida-public/AB6AXuA598CrxlFW3ji3W2XK0wtSgL_tBoKCIxT7Ww2OQMicS3Vzsx9McTyax3PnS38eV4S1nLMTVa8MqkYBRHwdmVe9mCIXPlDRUqz1e_3VdCPAy9-QnMEDbbqeTx8pW0RVT-xRXs8jotPwwPW4hgcfDqHA6Or6B8V0xRNKGFlIYzNWSKcu-OJZK2JGRJ9oGU2ybilgI3QfnguxhMjqCvYie2z5TiLrUXedlHvt1OXV6xJj59PM5GQDt0XwdA';
+  static const saludImage =
+      'https://lh3.googleusercontent.com/aida-public/AB6AXuBaRoHoiX3LWcwQiYpimpZ6sddiqkB55hFC64Q_8XxQ8Eu7a3doH0GA6bEzI8k89_5SGbtwdAOjREhQ32zzsbu3RMUJ8xariwV4LXlubVp0TwaoCztHkhnLpJys9W4hEVGEWDL4ojwRc-AxSge1eeoU450SHhyI37LyyXp3TRLJMoEbp9Mxg1Lo8x9LuIuBxoxyJcqy1CzkmtHPXlmf4-qzIp_D0-7r7RW7aJ7dRDQg3rp77ChDhAbWtg';
+
+  static const detailHero =
+      'https://lh3.googleusercontent.com/aida-public/AB6AXuCSeLKNv2dOuK8IQmrA8DKJM9VUfSEn5KVPKHaf2FKS4v5beiRvzFEH0J0E3mXbBrYIz5j9OXdl98g9ODTwKDhHSbC3lO0B9GM-EWZCiM0GYK8raisjExeDIv3zzn7WCR0Xt2Vkp6VizbmS1sVRht4DSChZcwm4G2KLknSHReJjTD4QAtsA3vOt1j1IRVI-eHtoTZBY2-Klay_vtC_HleuDDclpE5EMv_NO9Fg2CDknJIotrI8m6SbrtA';
+
+  static const attendee1 =
+      'https://lh3.googleusercontent.com/aida-public/AB6AXuBxY36agvj9q4XNYrkL79WGzhimG5m7ouoG4ycqnlK9IU_GkhCcDofAyTd8hlDp_j0oBDagZJ1RRtdQkdaTvZC85JHU5oh6i-wlgMIwqDx60_u9YjbNOkZbG5uKZuxpc5on6PSt4apux0F4MZOzJ9SE5Tr8QAu6ECkrEQuCtUPQQzFoJ9sbhCEqyBpzib11AVPMm3Pi-JvnXNYvuzdL4iKnkqDyYFmEPflrNe1qfKAScoJH8K2ytmVlxQ';
+  static const attendee2 =
+      'https://lh3.googleusercontent.com/aida-public/AB6AXuDHa4pHMB_SKB5kOMVPt9N8ppcWeMqc5oKGV1xUGsNU-HshAHGzqejGnn3ixRdzcCRCB4iof02o7BgZf1SZM6ack4FpuP2TpNv2ePeFgRBFi_3cRjk7876Sp8Mr9du3iwyZMvab_daKwyuytYwEYvUK2MS_msKG4qiEdc4zwC-olNHS8AZr0zdCKAPcPNB1n0humBNgpODapPw6JLDjKIDJpGFk1zJ8SQ3C5LaQIXBKuac5yPJDC6xvhw';
+  static const attendee3 =
+      'https://lh3.googleusercontent.com/aida-public/AB6AXuAjM48S7ZnqgrchD2zTTYqE59IFccW27uCeBcpXolkk_Uuis3QEgXlabIzDmsR553ROvXH3HkrmgWt4CN4sI_5nSddsgIN4CHLQ-UyCeDPXfRBAIlLYU-X21UBl78yZ9IZ4j3xAFqK1K57CoHDhuDsgXiod1FYuZH1y0OYsYv5ctHCUYYt1U-5C4a66YmHqOkVmM1M3PyqjIoClibhLtzNn72wV_mRwgc15pj-pqQozvu6806GDoUJY_g';
+
+  static const mapImage =
+      'https://lh3.googleusercontent.com/aida-public/AB6AXuDqMpsyLzYnTcv6sw_5-7TzKVptBUAvA6nUv6rTZR2eOlsv6lEtbZAWKkMagbhVcc7OiJJ6_10UsDf4Slqa3a3Rky4dgErRA4yNQIFC2C_oLgBNMc4OKrSfobwC_lC3KnQ__0UArHRDIyJlbIPzINnJ88ZKPfYPQkAYXzc1LZ9zTe7KhTG_42sMYrPilYXHniWusHDvPblLlEwTECVsCq335fs44iIPFvNglnkx0jLSjYAcRz3-Svde7w';
+
+  static const testimonialAvatar =
+      'https://lh3.googleusercontent.com/aida-public/AB6AXuAODP0A19FjGMKsBCQk7W3YvavOm82tN2yt1g3kA7tEf5wNnkhwbg_9nybrZhgjpQ83puNdg-W0Vz4bJIK6Jp8YB0OoNOqjiqkh8ctO_pL2-jmG323kqeSUV_Qr8Q5gQk32FKqfArTo8ThlkbDm5yCBrWzdAQWzdlhUMXAxCisj5j2KfBqQ13K0kzHR1m9q88qVJvNoWW9J-dkeZzhSn0Xx4rzHr5NBj74ctnp2A6-g_7B_nRQlwO6wmg';
+
+  static const appTutoriasThumb =
+      'https://lh3.googleusercontent.com/aida-public/AB6AXuBmGknL21XdBRKmDt0wnRsh2i002LegEhW2_rnbORlKOf6CQ0DrrRO-k0uCzVQ-WdpcunB_z_8ddMGpBsu9df7d8tYAsDG41_18EdCHAnZO3vkjzVWfyO5sztQk66FRLj4qlyxjgMQzLsgFvdNcAqhfl0JFyFrVK63qofqlDB7cDsJzFzS86dR2pC7AZQIC8z1NnannBlHxp79IggTHdQZZ0hdmpwVrdu_rMdUntsVKRcxiZKZq1Z3rmg';
+  static const appReforestacionThumb =
+      'https://lh3.googleusercontent.com/aida-public/AB6AXuBCU-gG2QpsZ_xdSStoMdzlcrw6FZMRJ5H4JcKrfaZde88-2TAE5FMFptDlj7gLqzzbTSzemznoxMjV4MABzVVw-YTK-ZD0yN2T4_P7TTHHOtpfh1jAiqPqcOAkbDXXVjgO9Cd_EdZkLsZ38ENn0jDRFuN4Ys8v8zAKMIcwbJWt8cj8Aaq47iAH7V9qxbUf0Ue_QK0icOkya9e5-Yr-j_1cTytShAGbhMRMCctQJatgojsdhvwXu-t6mA';
+  static const appBancoThumb =
+      'https://lh3.googleusercontent.com/aida-public/AB6AXuD56fOv-KQDdpnJUdtHXlYAHREsfrdQO8GQL81kuDKMGqKMQDG1G9kWkvBe8IzU8RdXBBG_DMLCC11o_2Odtw_PkokphNLcIMDOnGLj6C_aAQUNcniQRcDe_emkl-4_FZayaOpF7MytC9mIGa_9nvMuafCRPShcWFKJYsyrijSqDySkILkmY6f3XkzcPOCatqXeJgeVdnvSQBENa8XazDTiqsUhdf-4JKkcDTJK8TKi8wuOWWRpG67b2Q';
+}
