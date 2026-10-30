@@ -32,9 +32,8 @@ Future<void> _tap(WidgetTester tester, Finder finder) async {
 
 Finder _field(String label) => find.widgetWithText(TextFormField, label);
 
-Finder _favoritedHeart() => find.byWidgetPredicate(
-      (w) => w is Icon && w.color == AppColors.error,
-    );
+Finder _favoritedHeart() =>
+    find.byWidgetPredicate((w) => w is Icon && w.color == AppColors.error);
 
 void main() {
   setUpAll(() {
@@ -43,11 +42,14 @@ void main() {
   });
 
   group('Autenticación (F1)', () {
-    testWidgets('sin sesión muestra onboarding y permite iniciar sesión',
-        (tester) async {
+    testWidgets('sin sesión muestra onboarding y permite iniciar sesión', (
+      tester,
+    ) async {
       await _pumpApp(tester, signedIn: false);
 
-      expect(find.text('Empezar ahora'), findsOneWidget);
+      // En la primera página el botón principal es "Siguiente".
+      expect(find.text('Siguiente'), findsOneWidget);
+      expect(find.text('Empezar ahora'), findsNothing);
       await _tap(tester, find.text('Iniciar sesión'));
 
       expect(find.text('Inicia sesión'), findsOneWidget);
@@ -61,12 +63,13 @@ void main() {
     testWidgets('el onboarding ya visto no se repite', (tester) async {
       await _pumpApp(tester, signedIn: false, onboardingVisto: true);
 
-      expect(find.text('Empezar ahora'), findsNothing);
+      expect(find.text('Siguiente'), findsNothing);
       expect(find.text('Inicia sesión'), findsOneWidget);
     });
 
-    testWidgets('login con credenciales incorrectas muestra el error',
-        (tester) async {
+    testWidgets('login con credenciales incorrectas muestra el error', (
+      tester,
+    ) async {
       await _pumpApp(tester, signedIn: false, onboardingVisto: true);
 
       await tester.enterText(_field('Correo'), 'nadie@nodara.app');
@@ -78,6 +81,9 @@ void main() {
 
     testWidgets('el registro valida campos y crea la cuenta', (tester) async {
       await _pumpApp(tester, signedIn: false);
+      // Recorre las 3 páginas: en la última aparece "Empezar ahora".
+      await _tap(tester, find.text('Siguiente'));
+      await _tap(tester, find.text('Siguiente'));
       await _tap(tester, find.text('Empezar ahora'));
 
       expect(find.text('Crea tu cuenta'), findsOneWidget);
@@ -93,8 +99,9 @@ void main() {
       expect(find.text('¡Hola, Ana!'), findsOneWidget);
     });
 
-    testWidgets('una organización entra a su panel y puede cerrar sesión',
-        (tester) async {
+    testWidgets('una organización entra a su panel y puede cerrar sesión', (
+      tester,
+    ) async {
       await _pumpApp(tester, signedIn: false, onboardingVisto: true);
 
       await tester.enterText(_field('Correo'), 'org@nodara.app');
@@ -132,8 +139,9 @@ void main() {
       expect(find.text('Tutorías de Matemáticas y Ciencias'), findsNothing);
     });
 
-    testWidgets('los chips filtran por causa y el favorito alterna',
-        (tester) async {
+    testWidgets('los chips filtran por causa y el favorito alterna', (
+      tester,
+    ) async {
       await _pumpApp(tester);
 
       await _tap(tester, find.text('Educación'));
@@ -161,8 +169,9 @@ void main() {
       expect(_favoritedHeart(), findsOneWidget);
     });
 
-    testWidgets('postularse en el detalle agrega la postulación',
-        (tester) async {
+    testWidgets('postularse en el detalle agrega la postulación', (
+      tester,
+    ) async {
       await _pumpApp(tester);
 
       await tester.enterText(find.byType(TextField), 'Cruz');
@@ -193,8 +202,9 @@ void main() {
       );
     });
 
-    testWidgets('las horas del perfil se calculan de las completadas',
-        (tester) async {
+    testWidgets('las horas del perfil se calculan de las completadas', (
+      tester,
+    ) async {
       await _pumpApp(tester);
 
       await tester.tap(find.text('Perfil'));
