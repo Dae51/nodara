@@ -1,5 +1,3 @@
-import 'dart:async';
-
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 
@@ -21,37 +19,28 @@ class FirebaseAuthDataSource implements AuthDataSource {
   CollectionReference<Map<String, dynamic>> get _users =>
       _db.collection('users');
 
-  /// Combina `authStateChanges()` con el documento del perfil: cada vez que
-  /// cambia la sesión se cancela la escucha anterior y se escucha el
-  /// documento del nuevo usuario.
+  /// Cada vez que cambia la sesión (entrar o salir), lee el perfil del
+  /// usuario en `users/{uid}` y lo convierte en [AppUser].
   @override
   Stream<AppUser?> authStateChanges() {
-    final controller = StreamController<AppUser?>();
-    StreamSubscription<User?>? authSub;
-    StreamSubscription<DocumentSnapshot<Map<String, dynamic>>>? docSub;
+    return _auth.authStateChanges().asyncMap((user) async {
+      if (user == null) return null;
+      final data = await _leerPerfil(user.uid);
+      return _toAppUser(user, data);
+    });
+  }
 
-    controller.onListen = () {
-      authSub = _auth.authStateChanges().listen(
-        (user) {
-          docSub?.cancel();
-          docSub = null;
-          if (user == null) {
-            controller.add(null);
-            return;
-          }
-          docSub = _users.doc(user.uid).snapshots().listen(
-                (doc) => controller.add(_toAppUser(user, doc.data())),
-                onError: controller.addError,
-              );
-        },
-        onError: controller.addError,
-      );
-    };
-    controller.onCancel = () async {
-      await docSub?.cancel();
-      await authSub?.cancel();
-    };
-    return controller.stream;
+  /// Lee el perfil. Justo después de registrarse, Firebase avisa de la
+  /// sesión antes de que el perfil termine de guardarse; por eso se
+  /// reintenta hasta 3 veces esperando medio segundo.
+  Future<Map<String, dynamic>?> _leerPerfil(String uid) async {
+    for (var intento = 0; intento < 3; intento++) {
+      final doc = await _users.doc(uid).get();
+      final data = doc.data();
+      if (data != null) return data;
+      await Future<void>.delayed(const Duration(milliseconds: 500));
+    }
+    return null;
   }
 
   @override
@@ -130,20 +119,28 @@ class FirebaseAuthDataSource implements AuthDataSource {
   }
 
   /// Traduce los códigos de `FirebaseAuthException` a mensajes claros.
-  static String _mensajeDeError(String code) => switch (code) {
-        'invalid-email' => 'El correo no es válido.',
-        'user-disabled' => 'Esta cuenta fue deshabilitada.',
-        'user-not-found' ||
-        'wrong-password' ||
-        'invalid-credential' =>
-          'Correo o contraseña incorrectos.',
-        'email-already-in-use' => 'Ya existe una cuenta con ese correo.',
-        'weak-password' => 'La contraseña es muy débil (mínimo 6 caracteres).',
-        'too-many-requests' =>
-          'Demasiados intentos. Espera unos minutos e intenta de nuevo.',
-        'network-request-failed' => 'Sin conexión. Revisa tu internet.',
-        'operation-not-allowed' =>
-          'El inicio con correo no está habilitado en Firebase.',
-        _ => 'Ocurrió un error ($code). Intenta de nuevo.',
-      };
+  static String _mensajeDeError(String code) {
+    switch (code) {
+      case 'invalid-email':
+        return 'El correo no es válido.';
+      case 'user-disabled':
+        return 'Esta cuenta fue deshabilitada.';
+      case 'user-not-found':
+      case 'wrong-password':
+      case 'invalid-credential':
+        return 'Correo o contraseña incorrectos.';
+      case 'email-already-in-use':
+        return 'Ya existe una cuenta con ese correo.';
+      case 'weak-password':
+        return 'La contraseña es muy débil (mínimo 6 caracteres).';
+      case 'too-many-requests':
+        return 'Demasiados intentos. Espera unos minutos e intenta de nuevo.';
+      case 'network-request-failed':
+        return 'Sin conexión. Revisa tu internet.';
+      case 'operation-not-allowed':
+        return 'El inicio con correo no está habilitado en Firebase.';
+      default:
+        return 'Ocurrió un error ($code). Intenta de nuevo.';
+    }
+  }
 }

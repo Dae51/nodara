@@ -55,9 +55,26 @@ class AuthProvider extends ChangeNotifier {
     return added;
   }
 
-  Future<bool> signIn({required String email, required String password}) =>
-      _run(() => _repository.signIn(email: email, password: password));
+  /// Inicia sesión. Devuelve `true` si funcionó; si no, deja el mensaje
+  /// en [error] para que la pantalla lo muestre.
+  Future<bool> signIn({required String email, required String password}) async {
+    _empezarCarga();
+    try {
+      await _repository.signIn(email: email, password: password);
+      return true;
+    } on AuthException catch (e) {
+      _error = e.message;
+      return false;
+    } catch (_) {
+      _error = 'Ocurrió un error inesperado. Intenta de nuevo.';
+      return false;
+    } finally {
+      _terminarCarga();
+    }
+  }
 
+  /// Crea la cuenta y su perfil. Igual que [signIn], devuelve `true` o
+  /// deja el mensaje en [error].
   Future<bool> register({
     required String nombre,
     required String email,
@@ -66,18 +83,29 @@ class AuthProvider extends ChangeNotifier {
     required RolUsuario rol,
     required List<Causa> intereses,
     int horasRequeridas = 0,
-  }) =>
-      _run(
-        () => _repository.register(
-          nombre: nombre,
-          email: email,
-          password: password,
-          tipo: tipo,
-          rol: rol,
-          intereses: intereses,
-          horasRequeridas: horasRequeridas,
-        ),
+  }) async {
+    _empezarCarga();
+    try {
+      await _repository.register(
+        nombre: nombre,
+        email: email,
+        password: password,
+        tipo: tipo,
+        rol: rol,
+        intereses: intereses,
+        horasRequeridas: horasRequeridas,
       );
+      return true;
+    } on AuthException catch (e) {
+      _error = e.message;
+      return false;
+    } catch (_) {
+      _error = 'Ocurrió un error inesperado. Intenta de nuevo.';
+      return false;
+    } finally {
+      _terminarCarga();
+    }
+  }
 
   Future<void> signOut() => _repository.signOut();
 
@@ -87,24 +115,17 @@ class AuthProvider extends ChangeNotifier {
     notifyListeners();
   }
 
-  /// Ejecuta una acción de autenticación manejando `isBusy` y `error`.
-  Future<bool> _run(Future<Object?> Function() action) async {
+  /// Muestra el indicador de carga y limpia el error anterior.
+  void _empezarCarga() {
     _isBusy = true;
     _error = null;
     notifyListeners();
-    try {
-      await action();
-      return true;
-    } on AuthException catch (e) {
-      _error = e.message;
-      return false;
-    } catch (_) {
-      _error = 'Ocurrió un error inesperado. Intenta de nuevo.';
-      return false;
-    } finally {
-      _isBusy = false;
-      notifyListeners();
-    }
+  }
+
+  /// Quita el indicador de carga y avisa a la pantalla.
+  void _terminarCarga() {
+    _isBusy = false;
+    notifyListeners();
   }
 
   void _onUserChanged(AppUser? user) {

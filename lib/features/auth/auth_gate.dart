@@ -86,19 +86,22 @@ class _AuthGateState extends State<AuthGate> {
               : const HomeShell();
         }
 
-        return switch (_step) {
-          null => const Scaffold(body: LoadingView()),
-          _AuthStep.onboarding => OnboardingScreen(
-              onStart: () => _finishOnboarding(_AuthStep.register),
-              onLogin: () => _finishOnboarding(_AuthStep.login),
-            ),
-          _AuthStep.login => LoginScreen(
-              onCreateAccount: () => _goTo(_AuthStep.register),
-            ),
-          _AuthStep.register => RegisterScreen(
-              onLogin: () => _goTo(_AuthStep.login),
-            ),
-        };
+        if (_step == _AuthStep.onboarding) {
+          return OnboardingScreen(
+            onStart: () => _finishOnboarding(_AuthStep.register),
+            onLogin: () => _finishOnboarding(_AuthStep.login),
+          );
+        } else if (_step == _AuthStep.login) {
+          return LoginScreen(
+            onCreateAccount: () => _goTo(_AuthStep.register),
+          );
+        } else if (_step == _AuthStep.register) {
+          return RegisterScreen(
+            onLogin: () => _goTo(_AuthStep.login),
+          );
+        }
+        // Todavía se está leyendo si el onboarding ya se vio.
+        return const Scaffold(body: LoadingView());
       },
     );
   }

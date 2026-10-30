@@ -22,20 +22,17 @@ const _pages = [
   _OnboardingPage(
     image: RemoteAssets.onboardingHero,
     title: 'Hacé la diferencia con tu comunidad',
-    subtitle:
-        'Sumá horas de servicio social acreditadas, adquirí experiencia profesional práctica y creá un impacto auténtico en tu entorno universitario y barrial.',
+    subtitle: 'Sumá horas de servicio social acreditadas, adquirí experiencia profesional práctica y creá un impacto auténtico en tu entorno universitario y barrial.',
   ),
   _OnboardingPage(
     image: RemoteAssets.tutoriasImage,
     title: 'Encontrá causas cerca de ti',
-    subtitle:
-        'Explora voluntariados de ONGs y universidades, filtrando por causa, ubicación y horas acreditables para tu carrera.',
+    subtitle: 'Explora voluntariados de ONGs y universidades, filtrando por causa, ubicación y horas acreditables para tu carrera.',
   ),
   _OnboardingPage(
     image: RemoteAssets.reforestacionImage,
     title: 'Sumá horas que dejan huella',
-    subtitle:
-        'Cada jornada suma a tu récord de servicio social con certificados oficiales y respaldo institucional.',
+    subtitle: 'Cada jornada suma a tu récord de servicio social con certificados oficiales y respaldo institucional.',
   ),
 ];
 
@@ -68,62 +65,82 @@ class _OnboardingScreenState extends State<OnboardingScreen> {
     super.dispose();
   }
 
+  /// Pasa a la siguiente página con animación (pantallas 1 y 2).
+  void _siguiente() {
+    _controller.nextPage(
+      duration: const Duration(milliseconds: 300),
+      curve: Curves.easeOut,
+    );
+  }
+
   @override
   Widget build(BuildContext context) {
+    final esUltima = _index == _pages.length - 1;
+
     return Scaffold(
       body: SafeArea(
-        child: Padding(
-          padding: const EdgeInsets.symmetric(horizontal: AppSpacing.md),
-          child: Column(
-            children: [
-              const SizedBox(height: AppSpacing.md),
-              _Header(onSkip: widget.onStart),
-              const SizedBox(height: AppSpacing.sm),
-              Expanded(
-                child: PageView.builder(
-                  controller: _controller,
-                  itemCount: _pages.length,
-                  onPageChanged: (i) => setState(() => _index = i),
-                  itemBuilder: (context, i) => _OnboardingPageView(page: _pages[i]),
-                ),
-              ),
-              const SizedBox(height: AppSpacing.lg),
-              _Dots(count: _pages.length, index: _index),
-              const SizedBox(height: AppSpacing.lg),
-              const _ValueGrid(),
-              const SizedBox(height: AppSpacing.lg),
-              FilledButton(
-                onPressed: widget.onStart,
-                child: const Row(
-                  mainAxisAlignment: MainAxisAlignment.center,
-                  children: [
-                    Text('Empezar ahora'),
-                    SizedBox(width: 8),
-                    Icon(Icons.arrow_forward, size: 20),
-                  ],
-                ),
-              ),
-              const SizedBox(height: AppSpacing.xs),
-              Row(
-                mainAxisAlignment: MainAxisAlignment.center,
+        child: Center(
+          // En navegador no se estira: mismo ancho máximo que login y registro.
+          child: ConstrainedBox(
+            constraints: const BoxConstraints(maxWidth: 480),
+            child: Padding(
+              padding: const EdgeInsets.symmetric(horizontal: AppSpacing.md),
+              child: Column(
                 children: [
-                  Text(
-                    '¿Ya tienes una cuenta?',
-                    style: AppTextStyles.bodyMd
-                        .copyWith(color: AppColors.onSurfaceVariant),
-                  ),
-                  TextButton(
-                    onPressed: widget.onLogin,
-                    child: Text(
-                      'Iniciar sesión',
-                      style: AppTextStyles.labelLg
-                          .copyWith(fontWeight: FontWeight.w700),
+                  const SizedBox(height: AppSpacing.md),
+                  _Header(onSkip: widget.onStart),
+                  const SizedBox(height: AppSpacing.sm),
+                  Expanded(
+                    child: PageView.builder(
+                      controller: _controller,
+                      itemCount: _pages.length,
+                      onPageChanged: (i) => setState(() => _index = i),
+                      itemBuilder: (context, i) =>
+                          _OnboardingPageView(page: _pages[i]),
                     ),
                   ),
+                  const SizedBox(height: AppSpacing.lg),
+                  _Dots(count: _pages.length, index: _index),
+                  const SizedBox(height: AppSpacing.lg),
+                  // "Siguiente" en las primeras páginas; en la última, "Empezar ahora".
+                  FilledButton(
+                    onPressed: esUltima ? widget.onStart : _siguiente,
+                    child: Row(
+                      mainAxisAlignment: MainAxisAlignment.center,
+                      children: [
+                        Text(esUltima ? 'Empezar ahora' : 'Siguiente'),
+                        const SizedBox(width: 8),
+                        const Icon(Icons.arrow_forward, size: 20),
+                      ],
+                    ),
+                  ),
+                  const SizedBox(height: AppSpacing.xs),
+                  // Wrap y no Row: en pantallas angostas el botón baja de línea.
+                  Wrap(
+                    alignment: WrapAlignment.center,
+                    crossAxisAlignment: WrapCrossAlignment.center,
+                    children: [
+                      Text(
+                        '¿Ya tienes una cuenta?',
+                        style: AppTextStyles.bodyMd.copyWith(
+                          color: AppColors.onSurfaceVariant,
+                        ),
+                      ),
+                      TextButton(
+                        onPressed: widget.onLogin,
+                        child: Text(
+                          'Iniciar sesión',
+                          style: AppTextStyles.labelLg.copyWith(
+                            fontWeight: FontWeight.w700,
+                          ),
+                        ),
+                      ),
+                    ],
+                  ),
+                  const SizedBox(height: AppSpacing.sm),
                 ],
               ),
-              const SizedBox(height: AppSpacing.sm),
-            ],
+            ),
           ),
         ),
       ),
@@ -152,8 +169,9 @@ class _Header extends StatelessWidget {
               padding: const EdgeInsets.symmetric(horizontal: 14, vertical: 8),
               child: Text(
                 'Omitir',
-                style: AppTextStyles.labelMd
-                    .copyWith(color: AppColors.onSurfaceVariant),
+                style: AppTextStyles.labelMd.copyWith(
+                  color: AppColors.onSurfaceVariant,
+                ),
               ),
             ),
           ),
@@ -175,79 +193,12 @@ class _OnboardingPageView extends StatelessWidget {
         Expanded(
           child: ClipRRect(
             borderRadius: BorderRadius.circular(AppRadius.lg),
-            child: Stack(
-              fit: StackFit.expand,
-              children: [
-                RemoteImage(url: page.image, icon: Icons.volunteer_activism),
-                const DecoratedBox(
-                  decoration: BoxDecoration(
-                    gradient: LinearGradient(
-                      begin: Alignment.bottomCenter,
-                      end: Alignment.topCenter,
-                      colors: [Color(0x661B1C19), Colors.transparent],
-                    ),
-                  ),
-                ),
-                Positioned(
-                  left: 12,
-                  bottom: 12,
-                  child: Container(
-                    padding: const EdgeInsets.symmetric(
-                        horizontal: 12, vertical: 6),
-                    decoration: BoxDecoration(
-                      color: AppColors.surfaceContainerLowest
-                          .withValues(alpha: 0.95),
-                      borderRadius: BorderRadius.circular(AppRadius.pill),
-                    ),
-                    child: Row(
-                      mainAxisSize: MainAxisSize.min,
-                      children: [
-                        const Icon(Icons.stars,
-                            size: 18, color: AppColors.secondaryContainer),
-                        const SizedBox(width: 6),
-                        Text(
-                          '+120k horas de impacto',
-                          style: AppTextStyles.labelMd.copyWith(
-                            color: AppColors.onSurface,
-                            fontWeight: FontWeight.w700,
-                          ),
-                        ),
-                      ],
-                    ),
-                  ),
-                ),
-                Positioned(
-                  top: 12,
-                  right: 12,
-                  child: Container(
-                    padding: const EdgeInsets.symmetric(
-                        horizontal: 10, vertical: 4),
-                    decoration: BoxDecoration(
-                      color: AppColors.primary.withValues(alpha: 0.9),
-                      borderRadius: BorderRadius.circular(AppRadius.pill),
-                    ),
-                    child: Row(
-                      mainAxisSize: MainAxisSize.min,
-                      children: [
-                        Container(
-                          width: 8,
-                          height: 8,
-                          decoration: const BoxDecoration(
-                            color: AppColors.secondaryContainer,
-                            shape: BoxShape.circle,
-                          ),
-                        ),
-                        const SizedBox(width: 6),
-                        Text(
-                          'Comunidad activa',
-                          style: AppTextStyles.labelSm
-                              .copyWith(color: Colors.white),
-                        ),
-                      ],
-                    ),
-                  ),
-                ),
-              ],
+            child: SizedBox(
+              width: double.infinity,
+              child: RemoteImage(
+                url: page.image,
+                icon: Icons.volunteer_activism,
+              ),
             ),
           ),
         ),
@@ -266,8 +217,10 @@ class _OnboardingPageView extends StatelessWidget {
           child: Text(
             page.subtitle,
             textAlign: TextAlign.center,
-            style: AppTextStyles.bodyMd
-                .copyWith(color: AppColors.onSurfaceVariant, height: 1.5),
+            style: AppTextStyles.bodyMd.copyWith(
+              color: AppColors.onSurfaceVariant,
+              height: 1.5,
+            ),
           ),
         ),
       ],
@@ -300,91 +253,6 @@ class _Dots extends StatelessWidget {
             ),
           ),
       ],
-    );
-  }
-}
-
-class _ValueGrid extends StatelessWidget {
-  const _ValueGrid();
-
-  @override
-  Widget build(BuildContext context) {
-    return Row(
-      children: const [
-        Expanded(
-          child: _ValueItem(
-            icon: Icons.verified,
-            title: 'Horas válidas',
-            subtitle: 'Para tu carrera',
-            iconBg: AppColors.primaryFixed,
-            iconColor: AppColors.primary,
-          ),
-        ),
-        SizedBox(width: AppSpacing.sm),
-        Expanded(
-          child: _ValueItem(
-            icon: Icons.groups,
-            title: 'Equipos afines',
-            subtitle: 'Con tus intereses',
-            iconBg: AppColors.secondaryFixed,
-            iconColor: AppColors.onSecondaryContainer,
-          ),
-        ),
-      ],
-    );
-  }
-}
-
-class _ValueItem extends StatelessWidget {
-  const _ValueItem({
-    required this.icon,
-    required this.title,
-    required this.subtitle,
-    required this.iconBg,
-    required this.iconColor,
-  });
-
-  final IconData icon;
-  final String title;
-  final String subtitle;
-  final Color iconBg;
-  final Color iconColor;
-
-  @override
-  Widget build(BuildContext context) {
-    return Container(
-      padding: const EdgeInsets.all(12),
-      decoration: BoxDecoration(
-        color: AppColors.surfaceContainerLow,
-        borderRadius: BorderRadius.circular(AppRadius.md),
-      ),
-      child: Row(
-        children: [
-          Container(
-            width: 32,
-            height: 32,
-            decoration: BoxDecoration(
-              color: iconBg,
-              borderRadius: BorderRadius.circular(AppRadius.sm),
-            ),
-            child: Icon(icon, size: 20, color: iconColor),
-          ),
-          const SizedBox(width: 10),
-          Expanded(
-            child: Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
-                Text(title, style: AppTextStyles.labelMd),
-                Text(
-                  subtitle,
-                  style: AppTextStyles.bodySm
-                      .copyWith(color: AppColors.onSurfaceVariant),
-                ),
-              ],
-            ),
-          ),
-        ],
-      ),
     );
   }
 }
