@@ -2,6 +2,9 @@ import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
 
 import 'app_colors.dart';
+import 'app_spacing.dart';
+
+export 'app_spacing.dart';
 
 /// Typography scale from the Civic Pulse design system, rendered with
 /// Roboto Flex at the exact sizes/weights/line-heights specified in DESIGN.md.
@@ -48,24 +51,6 @@ abstract final class AppTextStyles {
       _roboto(size: 12, weight: FontWeight.w600, height: 16, spacing: 0.03);
   static final labelSm =
       _roboto(size: 11, weight: FontWeight.w600, height: 16, spacing: 0.04);
-}
-
-/// Spacing scale (8pt grid with 4pt sub-increments).
-abstract final class AppSpacing {
-  static const xs = 4.0;
-  static const sm = 8.0;
-  static const md = 16.0;
-  static const lg = 24.0;
-  static const xl = 32.0;
-}
-
-/// Radius scale adapted to Material 3.
-abstract final class AppRadius {
-  static const xs = 4.0;
-  static const sm = 8.0;
-  static const md = 12.0;
-  static const lg = 16.0;
-  static const pill = 999.0;
 }
 
 abstract final class AppTheme {

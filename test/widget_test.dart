@@ -1,16 +1,36 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:google_fonts/google_fonts.dart';
+import 'package:nodara/core/di/app_dependencies.dart';
+import 'package:nodara/features/explore/widgets/opportunity_card.dart';
 import 'package:nodara/main.dart';
 import 'package:nodara/theme/app_colors.dart';
-import 'package:nodara/widgets/opportunity_card.dart';
 
-Future<void> _goToHome(WidgetTester tester) async {
-  await tester.pumpWidget(const NodaraApp());
-  await tester.pumpAndSettle();
-  await tester.tap(find.text('Empezar ahora'));
+/// Arranca la app con DataSources Fake (estado limpio en cada test).
+Future<void> _pumpApp(
+  WidgetTester tester, {
+  bool signedIn = true,
+  bool onboardingVisto = false,
+}) async {
+  await tester.pumpWidget(
+    NodaraApp(
+      dependencies: AppDependencies.fake(
+        startSignedIn: signedIn,
+        onboardingVisto: onboardingVisto,
+      ),
+    ),
+  );
   await tester.pumpAndSettle();
 }
+
+Future<void> _tap(WidgetTester tester, Finder finder) async {
+  await tester.ensureVisible(finder);
+  await tester.pumpAndSettle();
+  await tester.tap(finder);
+  await tester.pumpAndSettle();
+}
+
+Finder _field(String label) => find.widgetWithText(TextFormField, label);
 
 Finder _favoritedHeart() => find.byWidgetPredicate(
       (w) => w is Icon && w.color == AppColors.error,
@@ -18,87 +38,170 @@ Finder _favoritedHeart() => find.byWidgetPredicate(
 
 void main() {
   setUpAll(() {
-    // Avoid network font fetching during tests.
+    // Evita descargar fuentes durante los tests.
     GoogleFonts.config.allowRuntimeFetching = false;
   });
 
-  testWidgets('onboarding navega al feed y la búsqueda filtra',
-      (WidgetTester tester) async {
-    await _goToHome(tester);
+  group('Autenticación (F1)', () {
+    testWidgets('sin sesión muestra onboarding y permite iniciar sesión',
+        (tester) async {
+      await _pumpApp(tester, signedIn: false);
 
-    expect(find.text('¡Hola, Sofía!'), findsOneWidget);
-    expect(find.text('Oportunidades Destacadas'), findsOneWidget);
-    expect(find.text('Tutorías de Matemáticas y Ciencias'), findsOneWidget);
+      expect(find.text('Empezar ahora'), findsOneWidget);
+      await _tap(tester, find.text('Iniciar sesión'));
 
-    await tester.enterText(find.byType(TextField), 'EcoVida');
-    await tester.pumpAndSettle();
+      expect(find.text('Inicia sesión'), findsOneWidget);
+      await tester.enterText(_field('Correo'), 'sofia@nodara.app');
+      await tester.enterText(_field('Contraseña'), '123456');
+      await _tap(tester, find.text('Ingresar'));
 
-    expect(
-      find.text('Jornada de Reforestación y Limpieza de Cuencas'),
-      findsOneWidget,
-    );
-    expect(find.text('Tutorías de Matemáticas y Ciencias'), findsNothing);
+      expect(find.text('¡Hola, Sofía!'), findsOneWidget);
+    });
+
+    testWidgets('el onboarding ya visto no se repite', (tester) async {
+      await _pumpApp(tester, signedIn: false, onboardingVisto: true);
+
+      expect(find.text('Empezar ahora'), findsNothing);
+      expect(find.text('Inicia sesión'), findsOneWidget);
+    });
+
+    testWidgets('login con credenciales incorrectas muestra el error',
+        (tester) async {
+      await _pumpApp(tester, signedIn: false, onboardingVisto: true);
+
+      await tester.enterText(_field('Correo'), 'nadie@nodara.app');
+      await tester.enterText(_field('Contraseña'), '123456');
+      await _tap(tester, find.text('Ingresar'));
+
+      expect(find.text('Correo o contraseña incorrectos.'), findsOneWidget);
+    });
+
+    testWidgets('el registro valida campos y crea la cuenta', (tester) async {
+      await _pumpApp(tester, signedIn: false);
+      await _tap(tester, find.text('Empezar ahora'));
+
+      expect(find.text('Crea tu cuenta'), findsOneWidget);
+      await _tap(tester, find.text('Crear cuenta'));
+      expect(find.text('Ingresa tu nombre.'), findsOneWidget);
+      expect(find.text('Ingresa tu correo.'), findsOneWidget);
+
+      await tester.enterText(_field('Nombre'), 'Ana');
+      await tester.enterText(_field('Correo'), 'ana@correo.com');
+      await tester.enterText(_field('Contraseña'), 'secreta1');
+      await _tap(tester, find.text('Crear cuenta'));
+
+      expect(find.text('¡Hola, Ana!'), findsOneWidget);
+    });
+
+    testWidgets('una organización entra a su panel y puede cerrar sesión',
+        (tester) async {
+      await _pumpApp(tester, signedIn: false, onboardingVisto: true);
+
+      await tester.enterText(_field('Correo'), 'org@nodara.app');
+      await tester.enterText(_field('Contraseña'), '123456');
+      await _tap(tester, find.text('Ingresar'));
+      expect(find.textContaining('Panel de organización'), findsOneWidget);
+
+      await _tap(tester, find.byTooltip('Cerrar sesión'));
+      expect(find.text('Inicia sesión'), findsOneWidget);
+    });
   });
 
-  testWidgets('los chips filtran por categoría y el favorito alterna',
-      (WidgetTester tester) async {
-    await _goToHome(tester);
+  group('Voluntario', () {
+    testWidgets('el feed carga y la búsqueda filtra', (tester) async {
+      await _pumpApp(tester);
 
-    await tester.tap(find.text('Educación'));
-    await tester.pumpAndSettle();
+      expect(find.text('¡Hola, Sofía!'), findsOneWidget);
+      expect(find.text('Oportunidades Destacadas'), findsOneWidget);
 
-    expect(find.text('Tutorías de Matemáticas y Ciencias'), findsOneWidget);
-    expect(
-      find.text('Jornada de Reforestación y Limpieza de Cuencas'),
-      findsNothing,
-    );
+      // El feed se ordena por fecha de cierre: la primera tarjeta es la
+      // campaña de salud (cierra antes). La lista es perezosa
+      // (SliverList.builder), así que solo validamos lo que está en pantalla.
+      expect(
+        find.text('Campaña de Salud y Prevención Dental Comunitaria'),
+        findsOneWidget,
+      );
 
-    final card = find.byType(OpportunityCard);
-    expect(card, findsOneWidget);
-    expect(_favoritedHeart(), findsNothing);
+      await tester.enterText(find.byType(TextField), 'EcoVida');
+      await tester.pumpAndSettle();
 
-    final heart = find.descendant(
-      of: card,
-      matching: find.byWidgetPredicate(
-        (w) => w is Icon && w.color == AppColors.onSurface,
-      ),
-    );
-    expect(heart, findsOneWidget);
+      expect(
+        find.text('Jornada de Reforestación y Limpieza de Cuencas'),
+        findsOneWidget,
+      );
+      expect(find.text('Tutorías de Matemáticas y Ciencias'), findsNothing);
+    });
 
-    await tester.tap(heart);
-    await tester.pumpAndSettle();
-    expect(_favoritedHeart(), findsOneWidget);
-  });
+    testWidgets('los chips filtran por causa y el favorito alterna',
+        (tester) async {
+      await _pumpApp(tester);
 
-  testWidgets('postularse en el detalle agrega la postulación',
-      (WidgetTester tester) async {
-    await _goToHome(tester);
+      await _tap(tester, find.text('Educación'));
 
-    await tester.enterText(find.byType(TextField), 'Cruz');
-    await tester.pumpAndSettle();
+      expect(find.text('Tutorías de Matemáticas y Ciencias'), findsOneWidget);
+      expect(
+        find.text('Jornada de Reforestación y Limpieza de Cuencas'),
+        findsNothing,
+      );
 
-    await tester.tap(
-      find.text('Campaña de Salud y Prevención Dental Comunitaria'),
-    );
-    await tester.pumpAndSettle();
+      final card = find.byType(OpportunityCard);
+      expect(card, findsOneWidget);
+      expect(_favoritedHeart(), findsNothing);
 
-    expect(find.text('Postularme ahora'), findsOneWidget);
-    expect(find.text('Requisitos para postular'), findsOneWidget);
+      final heart = find.descendant(
+        of: card,
+        matching: find.byWidgetPredicate(
+          (w) => w is Icon && w.color == AppColors.onSurface,
+        ),
+      );
+      expect(heart, findsOneWidget);
 
-    await tester.tap(find.text('Postularme ahora'));
-    await tester.pumpAndSettle();
+      await tester.tap(heart);
+      await tester.pumpAndSettle();
+      expect(_favoritedHeart(), findsOneWidget);
+    });
 
-    expect(find.text('¡Ya estás postulado!'), findsOneWidget);
+    testWidgets('postularse en el detalle agrega la postulación',
+        (tester) async {
+      await _pumpApp(tester);
 
-    await tester.tap(find.byIcon(Icons.arrow_back));
-    await tester.pumpAndSettle();
+      await tester.enterText(find.byType(TextField), 'Cruz');
+      await tester.pumpAndSettle();
 
-    await tester.tap(find.text('Postulaciones'));
-    await tester.pumpAndSettle();
+      await _tap(
+        tester,
+        find.text('Campaña de Salud y Prevención Dental Comunitaria'),
+      );
 
-    expect(
-      find.text('Campaña de Salud y Prevención Dental Comunitaria'),
-      findsOneWidget,
-    );
+      expect(find.text('Postularme ahora'), findsOneWidget);
+      expect(find.text('Requisitos para postular'), findsOneWidget);
+
+      await tester.tap(find.text('Postularme ahora'));
+      await tester.pumpAndSettle();
+
+      expect(find.text('¡Ya estás postulado!'), findsOneWidget);
+
+      await tester.tap(find.byIcon(Icons.arrow_back));
+      await tester.pumpAndSettle();
+
+      await tester.tap(find.text('Postulaciones'));
+      await tester.pumpAndSettle();
+
+      expect(
+        find.text('Campaña de Salud y Prevención Dental Comunitaria'),
+        findsOneWidget,
+      );
+    });
+
+    testWidgets('las horas del perfil se calculan de las completadas',
+        (tester) async {
+      await _pumpApp(tester);
+
+      await tester.tap(find.text('Perfil'));
+      await tester.pumpAndSettle();
+
+      // 20 + 25 horas de las dos postulaciones completadas del seed.
+      expect(find.text('45 / 80 hrs'), findsOneWidget);
+    });
   });
 }

@@ -1,0 +1,29 @@
+{
+  "project_info": {
+    "project_number": "910296974715",
+    "project_id": "nodara-community",
+    "storage_bucket": "nodara-community.firebasestorage.app"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:910296974715:android:e3a3615c0b6c947077a9de",
+        "android_client_info": {
+          "package_name": "com.example.nodara"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyAEr0ALxXL8po9RRdDrK80NlLcaHFDkILw"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
