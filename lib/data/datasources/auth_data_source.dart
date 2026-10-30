@@ -33,5 +33,9 @@ abstract class AuthDataSource {
 
   Future<void> signOut();
 
+  /// Envía un correo para restablecer la contraseña. Por seguridad no revela
+  /// si la cuenta existe.
+  Future<void> sendPasswordReset({required String email});
+
   Future<void> updateUser(AppUser user);
 }

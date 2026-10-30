@@ -107,6 +107,24 @@ class AuthProvider extends ChangeNotifier {
     }
   }
 
+  /// Envía el correo de recuperación. Devuelve `true` si el envío no falló;
+  /// si no, deja el mensaje en [error] como [signIn].
+  Future<bool> sendPasswordReset({required String email}) async {
+    _empezarCarga();
+    try {
+      await _repository.sendPasswordReset(email: email);
+      return true;
+    } on AuthException catch (e) {
+      _error = e.message;
+      return false;
+    } catch (_) {
+      _error = 'Ocurrió un error inesperado. Intenta de nuevo.';
+      return false;
+    } finally {
+      _terminarCarga();
+    }
+  }
+
   Future<void> signOut() => _repository.signOut();
 
   void clearError() {

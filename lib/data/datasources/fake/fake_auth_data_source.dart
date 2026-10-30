@@ -75,6 +75,11 @@ class FakeAuthDataSource implements AuthDataSource {
   Future<void> signOut() async => _setCurrent(null);
 
   @override
+  Future<void> sendPasswordReset({required String email}) async {
+    // Fake: no envía nada. Igual que Firebase, no revela si la cuenta existe.
+  }
+
+  @override
   Future<void> updateUser(AppUser user) async {
     _users[user.email] = user;
     if (_current?.uid == user.uid) _setCurrent(user);

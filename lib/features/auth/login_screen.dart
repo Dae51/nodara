@@ -45,6 +45,24 @@ class _LoginScreenState extends State<LoginScreen> {
         );
   }
 
+  Future<void> _recuperarContrasena() async {
+    final email = await showDialog<String>(
+      context: context,
+      builder: (_) => _ResetPasswordDialog(initialEmail: _emailController.text),
+    );
+    if (email == null || !mounted) return; // canceló o se cerró la pantalla
+    final auth = context.read<AuthProvider>();
+    final enviado = await auth.sendPasswordReset(email: email);
+    if (!mounted || !enviado) return; // si falló, el banner muestra el error
+    ScaffoldMessenger.of(context).showSnackBar(
+      const SnackBar(
+        content: Text(
+          'Si la cuenta existe, te enviamos un correo para restablecer tu contraseña.',
+        ),
+      ),
+    );
+  }
+
   @override
   Widget build(BuildContext context) {
     final auth = context.watch<AuthProvider>();
@@ -103,8 +121,15 @@ class _LoginScreenState extends State<LoginScreen> {
                         ),
                       ),
                     ),
+                    Align(
+                      alignment: Alignment.centerRight,
+                      child: TextButton(
+                        onPressed: _recuperarContrasena,
+                        child: const Text('¿Olvidaste tu contraseña?'),
+                      ),
+                    ),
                     if (error != null) ...[
-                      const SizedBox(height: AppSpacing.md),
+                      const SizedBox(height: AppSpacing.sm),
                       AuthErrorBanner(message: error),
                     ],
                     const SizedBox(height: AppSpacing.lg),
@@ -136,6 +161,79 @@ class _LoginScreenState extends State<LoginScreen> {
           ),
         ),
       ),
+    );
+  }
+}
+
+/// Diálogo que pide el correo para enviar el enlace de recuperación.
+/// Devuelve el correo (ya validado) al cerrarse, o `null` si se cancela.
+class _ResetPasswordDialog extends StatefulWidget {
+  const _ResetPasswordDialog({required this.initialEmail});
+
+  final String initialEmail;
+
+  @override
+  State<_ResetPasswordDialog> createState() => _ResetPasswordDialogState();
+}
+
+class _ResetPasswordDialogState extends State<_ResetPasswordDialog> {
+  final _formKey = GlobalKey<FormState>();
+  late final TextEditingController _controller =
+      TextEditingController(text: widget.initialEmail);
+
+  @override
+  void dispose() {
+    _controller.dispose();
+    super.dispose();
+  }
+
+  void _enviar() {
+    final form = _formKey.currentState;
+    if (form == null || !form.validate()) return;
+    Navigator.of(context).pop(_controller.text.trim());
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    return AlertDialog(
+      title: const Text('Recuperar contraseña'),
+      content: Form(
+        key: _formKey,
+        child: Column(
+          mainAxisSize: MainAxisSize.min,
+          children: [
+            Text(
+              'Escribe tu correo y te enviaremos un enlace para restablecer tu contraseña.',
+              style: AppTextStyles.bodyMd
+                  .copyWith(color: AppColors.onSurfaceVariant),
+            ),
+            const SizedBox(height: AppSpacing.md),
+            TextFormField(
+              controller: _controller,
+              keyboardType: TextInputType.emailAddress,
+              autofocus: true,
+              textInputAction: TextInputAction.done,
+              autofillHints: const [AutofillHints.email],
+              onFieldSubmitted: (_) => _enviar(),
+              validator: Validators.email,
+              decoration: const InputDecoration(
+                labelText: 'Correo',
+                prefixIcon: Icon(Icons.mail_outline),
+              ),
+            ),
+          ],
+        ),
+      ),
+      actions: [
+        TextButton(
+          onPressed: () => Navigator.of(context).pop(),
+          child: const Text('Cancelar'),
+        ),
+        FilledButton(
+          onPressed: _enviar,
+          child: const Text('Enviar'),
+        ),
+      ],
     );
   }
 }
