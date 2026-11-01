@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:url_launcher/url_launcher.dart';
 
 import 'package:nodara/core/constants/remote_assets.dart';
 import 'package:nodara/core/utils/icon_mapper.dart';
@@ -7,6 +8,7 @@ import 'package:nodara/core/widgets/app_card.dart';
 import 'package:nodara/core/widgets/remote_image.dart';
 import 'package:nodara/core/widgets/section_header.dart';
 import 'package:nodara/data/models/opportunity.dart';
+import 'package:nodara/features/donations/widgets/location_map_view.dart';
 import 'package:nodara/theme/app_colors.dart';
 import 'package:nodara/theme/app_theme.dart';
 
@@ -24,14 +26,18 @@ class DetailAboutSection extends StatelessWidget {
         const SizedBox(height: AppSpacing.sm),
         Text(
           opportunity.descripcion,
-          style: AppTextStyles.bodyMd
-              .copyWith(color: AppColors.onSurfaceVariant, height: 1.5),
+          style: AppTextStyles.bodyMd.copyWith(
+            color: AppColors.onSurfaceVariant,
+            height: 1.5,
+          ),
         ),
         const SizedBox(height: AppSpacing.sm),
         Text(
           'No se requiere experiencia docente previa: te capacitamos durante una sesión inductiva previa para dotarte de dinámicas pedagógicas lúdicas y materiales didácticos listos para usar.',
-          style: AppTextStyles.bodyMd
-              .copyWith(color: AppColors.onSurfaceVariant, height: 1.5),
+          style: AppTextStyles.bodyMd.copyWith(
+            color: AppColors.onSurfaceVariant,
+            height: 1.5,
+          ),
         ),
       ],
     );
@@ -69,8 +75,11 @@ class DetailRequirementsCard extends StatelessWidget {
                       color: AppColors.primaryFixed,
                       shape: BoxShape.circle,
                     ),
-                    child: const Icon(Icons.check,
-                        size: 14, color: AppColors.primary),
+                    child: const Icon(
+                      Icons.check,
+                      size: 14,
+                      color: AppColors.primary,
+                    ),
                   ),
                   const SizedBox(width: AppSpacing.sm),
                   Expanded(
@@ -114,7 +123,11 @@ class DetailBenefitsCard extends StatelessWidget {
                 ),
                 child: Row(
                   children: [
-                    Icon(iconFromKey(benefit.iconKey), size: 22, color: AppColors.primary),
+                    Icon(
+                      iconFromKey(benefit.iconKey),
+                      size: 22,
+                      color: AppColors.primary,
+                    ),
                     const SizedBox(width: AppSpacing.sm),
                     Expanded(
                       child: Column(
@@ -124,7 +137,8 @@ class DetailBenefitsCard extends StatelessWidget {
                           Text(
                             benefit.subtitulo,
                             style: AppTextStyles.bodySm.copyWith(
-                                color: AppColors.onSurfaceVariant),
+                              color: AppColors.onSurfaceVariant,
+                            ),
                           ),
                         ],
                       ),
@@ -144,27 +158,41 @@ class DetailMapCard extends StatelessWidget {
 
   final Opportunity opportunity;
 
+  Future<void> _openRoute(BuildContext context) async {
+    final uri = Uri.parse(
+      'https://www.google.com/maps/search/?api=1&query=${opportunity.lat},${opportunity.lng}',
+    );
+    final launched = await launchUrl(uri, mode: LaunchMode.externalApplication);
+    if (!launched && context.mounted) {
+      showAppToast(context, 'No se pudo abrir Google Maps');
+    }
+  }
+
   @override
   Widget build(BuildContext context) {
+    final direccion = opportunity.direccion.isEmpty
+        ? opportunity.ubicacion
+        : opportunity.direccion;
+
     return AppCard(
       elevated: false,
       child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
         children: [
           Row(
             children: [
               const Icon(Icons.explore, size: 18, color: AppColors.primary),
               const SizedBox(width: 6),
               Expanded(
-                child: Text('Punto de Encuentro',
-                    style: AppTextStyles.titleMd
-                        .copyWith(fontWeight: FontWeight.w700)),
+                child: Text(
+                  'Punto de Encuentro',
+                  style: AppTextStyles.titleMd.copyWith(
+                    fontWeight: FontWeight.w700,
+                  ),
+                ),
               ),
               TextButton.icon(
-                onPressed: () => showAppToast(
-                  context,
-                  'Abriendo ruta al punto de encuentro',
-                  icon: Icons.map_outlined,
-                ),
+                onPressed: () => _openRoute(context),
                 icon: const Icon(Icons.arrow_forward, size: 14),
                 label: const Text('Ver ruta'),
                 style: TextButton.styleFrom(
@@ -179,45 +207,21 @@ class DetailMapCard extends StatelessWidget {
           ClipRRect(
             borderRadius: BorderRadius.circular(AppRadius.sm),
             child: SizedBox(
-              height: 144,
+              height: 160,
               width: double.infinity,
-              child: Stack(
-                fit: StackFit.expand,
-                children: [
-                  const RemoteImage(
-                    url: RemoteAssets.mapImage,
-                    icon: Icons.map_outlined,
-                  ),
-                  Positioned(
-                    left: 8,
-                    bottom: 8,
-                    child: Container(
-                      padding: const EdgeInsets.symmetric(
-                          horizontal: 10, vertical: 4),
-                      decoration: BoxDecoration(
-                        color: AppColors.surfaceContainerLowest
-                            .withValues(alpha: 0.9),
-                        borderRadius: BorderRadius.circular(AppRadius.sm),
-                      ),
-                      child: Row(
-                        mainAxisSize: MainAxisSize.min,
-                        children: [
-                          const Icon(Icons.location_on,
-                              size: 14, color: AppColors.primary),
-                          const SizedBox(width: 4),
-                          Text(
-                            opportunity.direccion.isEmpty
-                                ? opportunity.ubicacion
-                                : opportunity.direccion,
-                            style: AppTextStyles.labelSm,
-                          ),
-                        ],
-                      ),
-                    ),
-                  ),
-                ],
+              child: LocationMapView(
+                lat: opportunity.lat,
+                lng: opportunity.lng,
               ),
             ),
+          ),
+          const SizedBox(height: AppSpacing.sm),
+          Row(
+            children: [
+              const Icon(Icons.location_on, size: 14, color: AppColors.primary),
+              const SizedBox(width: 4),
+              Expanded(child: Text(direccion, style: AppTextStyles.labelSm)),
+            ],
           ),
         ],
       ),
@@ -256,14 +260,18 @@ class DetailTestimonialCard extends StatelessWidget {
                     Text('Mateo Benítez', style: AppTextStyles.titleSm),
                     Text(
                       'Estudiante de Ing. Civil · Voluntario 2024',
-                      style: AppTextStyles.labelSm
-                          .copyWith(color: AppColors.onSurfaceVariant),
+                      style: AppTextStyles.labelSm.copyWith(
+                        color: AppColors.onSurfaceVariant,
+                      ),
                     ),
                   ],
                 ),
               ),
-              const Icon(Icons.format_quote,
-                  size: 32, color: Color(0x33093DB2)),
+              const Icon(
+                Icons.format_quote,
+                size: 32,
+                color: Color(0x33093DB2),
+              ),
             ],
           ),
           const SizedBox(height: AppSpacing.sm),

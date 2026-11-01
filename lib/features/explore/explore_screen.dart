@@ -1,7 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 
-import 'package:nodara/core/utils/toast.dart';
 import 'package:nodara/core/widgets/empty_view.dart';
 import 'package:nodara/core/widgets/error_view.dart';
 import 'package:nodara/core/widgets/loading_view.dart';
@@ -9,9 +8,12 @@ import 'package:nodara/core/widgets/section_header.dart';
 import 'package:nodara/data/models/opportunity.dart';
 import 'package:nodara/features/applications/applications_provider.dart';
 import 'package:nodara/features/auth/auth_provider.dart';
+import 'package:nodara/features/donations/donations_screen.dart';
 import 'package:nodara/features/explore/explore_provider.dart';
 import 'package:nodara/features/explore/widgets/civic_search_bar.dart';
+import 'package:nodara/features/explore/widgets/explore_filter_sheet.dart';
 import 'package:nodara/features/explore/widgets/explore_greeting.dart';
+import 'package:nodara/features/explore/widgets/explore_mode_selector.dart';
 import 'package:nodara/features/explore/widgets/filter_chips_row.dart';
 import 'package:nodara/features/explore/widgets/goal_banner.dart';
 import 'package:nodara/features/explore/widgets/opportunity_card.dart';
@@ -30,6 +32,7 @@ class ExploreScreen extends StatefulWidget {
 
 class _ExploreScreenState extends State<ExploreScreen> {
   final _searchController = TextEditingController();
+  ExploreMode _mode = ExploreMode.voluntariados;
 
   @override
   void dispose() {
@@ -50,90 +53,109 @@ class _ExploreScreenState extends State<ExploreScreen> {
     context.read<ExploreProvider>().clearFilters();
   }
 
-  void _showFilterInfo() {
-    // F2 (Josué): reemplazar por la hoja de filtros (formato, horas,
-    // departamento) con showModalBottomSheet.
-    showAppToast(context, 'Filtros avanzados disponibles pronto', icon: Icons.tune);
-  }
+  void _showFilters() => showExploreFilterSheet(context);
 
   @override
   Widget build(BuildContext context) {
-    final explore = context.watch<ExploreProvider>();
-    final applications = context.watch<ApplicationsProvider>();
     final user = context.watch<AuthProvider>().user;
-    final opportunities = explore.filtered;
+    final applications = context.watch<ApplicationsProvider>();
 
     return Scaffold(
       body: SafeArea(
         bottom: false,
-        child: CustomScrollView(
-          slivers: [
-            SliverToBoxAdapter(
-              child: ExploreGreeting(
-                nombre: user?.nombre ?? '',
-                avatarUrl: user?.avatarUrl ?? '',
-                nivel: applications.nivel,
+        child: Column(
+          children: [
+            ExploreGreeting(
+              nombre: user?.nombre ?? '',
+              avatarUrl: user?.avatarUrl ?? '',
+              nivel: applications.nivel,
+            ),
+            Padding(
+              padding: const EdgeInsets.fromLTRB(
+                AppSpacing.md,
+                0,
+                AppSpacing.md,
+                AppSpacing.sm,
+              ),
+              child: ExploreModeSelector(
+                selected: _mode,
+                onChanged: (mode) => setState(() => _mode = mode),
               ),
             ),
-            SliverToBoxAdapter(
-              child: Padding(
-                padding: const EdgeInsets.symmetric(horizontal: AppSpacing.md),
-                child: CivicSearchBar(
-                  controller: _searchController,
-                  onChanged: explore.setSearchQuery,
-                  onFilterTap: _showFilterInfo,
-                ),
-              ),
+            Expanded(
+              child: _mode == ExploreMode.voluntariados
+                  ? _buildVoluntariados()
+                  : const DonationsScreen(),
             ),
-            const SliverToBoxAdapter(child: SizedBox(height: AppSpacing.sm)),
-            SliverToBoxAdapter(
-              child: FilterChipsRow(
-                selected: explore.selectedCausa,
-                onSelected: explore.setCausa,
-              ),
-            ),
-            SliverToBoxAdapter(
-              child: Padding(
-                padding: const EdgeInsets.fromLTRB(
-                  AppSpacing.md,
-                  AppSpacing.sm,
-                  AppSpacing.md,
-                  AppSpacing.sm,
-                ),
-                child: SectionHeader(
-                  title: 'Oportunidades Destacadas',
-                  trailing: Text(
-                    '${opportunities.length} disponibles',
-                    style:
-                        AppTextStyles.labelSm.copyWith(color: AppColors.primary),
-                  ),
-                ),
-              ),
-            ),
-            _OpportunitiesSliver(
-              isLoading: explore.isLoading,
-              error: explore.error,
-              opportunities: opportunities,
-              onRetry: explore.retry,
-              onClearFilters: _clearFilters,
-              onOpen: _openDetail,
-            ),
-            if (user != null && user.tieneMetaDeHoras)
-              SliverToBoxAdapter(
-                child: Padding(
-                  padding:
-                      const EdgeInsets.symmetric(horizontal: AppSpacing.md),
-                  child: GoalBanner(
-                    porcentaje: applications.progresoPorcentaje,
-                    horasFaltantes: applications.horasFaltantes,
-                    onTap: () => widget.onOpenApplications?.call(),
-                  ),
-                ),
-              ),
-            const SliverToBoxAdapter(child: SizedBox(height: AppSpacing.lg)),
           ],
         ),
       ),
+    );
+  }
+
+  Widget _buildVoluntariados() {
+    final explore = context.watch<ExploreProvider>();
+    final user = context.watch<AuthProvider>().user;
+    final applications = context.watch<ApplicationsProvider>();
+    final opportunities = explore.filtered;
+
+    return CustomScrollView(
+      slivers: [
+        SliverToBoxAdapter(
+          child: Padding(
+            padding: const EdgeInsets.symmetric(horizontal: AppSpacing.md),
+            child: CivicSearchBar(
+              controller: _searchController,
+              onChanged: explore.setSearchQuery,
+              onFilterTap: _showFilters,
+            ),
+          ),
+        ),
+        const SliverToBoxAdapter(child: SizedBox(height: AppSpacing.sm)),
+        SliverToBoxAdapter(
+          child: FilterChipsRow(
+            selected: explore.selectedCausa,
+            onSelected: explore.setCausa,
+          ),
+        ),
+        SliverToBoxAdapter(
+          child: Padding(
+            padding: const EdgeInsets.fromLTRB(
+              AppSpacing.md,
+              AppSpacing.sm,
+              AppSpacing.md,
+              AppSpacing.sm,
+            ),
+            child: SectionHeader(
+              title: 'Oportunidades Destacadas',
+              trailing: Text(
+                '${opportunities.length} disponibles',
+                style: AppTextStyles.labelSm.copyWith(color: AppColors.primary),
+              ),
+            ),
+          ),
+        ),
+        _OpportunitiesSliver(
+          isLoading: explore.isLoading,
+          error: explore.error,
+          opportunities: opportunities,
+          onRetry: explore.retry,
+          onClearFilters: _clearFilters,
+          onOpen: _openDetail,
+        ),
+        if (user != null && user.tieneMetaDeHoras)
+          SliverToBoxAdapter(
+            child: Padding(
+              padding: const EdgeInsets.symmetric(horizontal: AppSpacing.md),
+              child: GoalBanner(
+                porcentaje: applications.progresoPorcentaje,
+                horasFaltantes: applications.horasFaltantes,
+                onTap: () => widget.onOpenApplications?.call(),
+              ),
+            ),
+          ),
+        const SliverToBoxAdapter(child: SizedBox(height: AppSpacing.lg)),
+      ],
     );
   }
 }
@@ -173,7 +195,7 @@ class _OpportunitiesSliver extends StatelessWidget {
       return SliverToBoxAdapter(
         child: EmptyView(
           icon: Icons.search_off,
-          message: 'No encontramos voluntariados para tu búsqueda.',
+          message: 'No encontramos voluntariados con esos filtros.',
           actionLabel: 'Limpiar filtros',
           onAction: onClearFilters,
         ),

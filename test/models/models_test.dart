@@ -106,6 +106,19 @@ void main() {
       expect(EstadoPostulacion.completado.esActiva, isFalse);
     });
 
+    test('expone transiciones válidas y estados terminales', () {
+      expect(
+        EstadoPostulacion.enRevision.siguientes,
+        containsAll([
+          EstadoPostulacion.entrevista,
+          EstadoPostulacion.aceptado,
+          EstadoPostulacion.listaEspera,
+        ]),
+      );
+      expect(EstadoPostulacion.completado.siguientes, isEmpty);
+      expect(EstadoPostulacion.noShow.esCerrada, isTrue);
+    });
+
     test('toMap / fromMap conserva estado y horas', () {
       final original = app(EstadoPostulacion.completado, acreditadas: 6);
       final copia = Application.fromMap(original.id, original.toMap());

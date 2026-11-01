@@ -49,17 +49,15 @@ class ExploreGreeting extends StatelessWidget {
                   '¿Dónde querés dejar tu huella hoy?',
                   maxLines: 1,
                   overflow: TextOverflow.ellipsis,
-                  style: AppTextStyles.bodyMd
-                      .copyWith(color: AppColors.onSurfaceVariant),
+                  style: AppTextStyles.bodyMd.copyWith(
+                    color: AppColors.onSurfaceVariant,
+                  ),
                 ),
               ],
             ),
           ),
           const SizedBox(width: AppSpacing.md),
-          _AvatarBadge(
-            avatarUrl: avatarUrl,
-            level: nivel,
-          ),
+          _AvatarBadge(avatarUrl: avatarUrl, level: nivel),
         ],
       ),
     );
@@ -104,8 +102,11 @@ class _AvatarBadge extends StatelessWidget {
             child: Row(
               mainAxisSize: MainAxisSize.min,
               children: [
-                const Icon(Icons.workspace_premium,
-                    size: 11, color: Colors.white),
+                const Icon(
+                  Icons.workspace_premium,
+                  size: 11,
+                  color: Colors.white,
+                ),
                 const SizedBox(width: 2),
                 Text(
                   'Nv. $level',

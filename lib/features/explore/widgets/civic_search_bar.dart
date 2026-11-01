@@ -49,8 +49,9 @@ class CivicSearchBar extends StatelessWidget {
                 enabledBorder: InputBorder.none,
                 focusedBorder: InputBorder.none,
                 contentPadding: const EdgeInsets.symmetric(vertical: 12),
-                hintStyle:
-                    AppTextStyles.bodyMd.copyWith(color: AppColors.outline),
+                hintStyle: AppTextStyles.bodyMd.copyWith(
+                  color: AppColors.outline,
+                ),
               ),
             ),
           ),

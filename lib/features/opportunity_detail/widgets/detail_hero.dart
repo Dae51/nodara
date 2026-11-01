@@ -58,8 +58,7 @@ class DetailHero extends StatelessWidget {
             left: 16,
             bottom: 16,
             child: Container(
-              padding:
-                  const EdgeInsets.symmetric(horizontal: 12, vertical: 6),
+              padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 6),
               decoration: BoxDecoration(
                 color: AppColors.secondaryContainer,
                 borderRadius: BorderRadius.circular(AppRadius.pill),
@@ -67,13 +66,17 @@ class DetailHero extends StatelessWidget {
               child: Row(
                 mainAxisSize: MainAxisSize.min,
                 children: [
-                  const Icon(Icons.bolt,
-                      size: 16, color: AppColors.onSecondaryFixed),
+                  const Icon(
+                    Icons.bolt,
+                    size: 16,
+                    color: AppColors.onSecondaryFixed,
+                  ),
                   const SizedBox(width: 4),
                   Text(
                     'Convocatoria Abierta · Cupos Limitados',
-                    style: AppTextStyles.labelMd
-                        .copyWith(color: AppColors.onSecondaryFixed),
+                    style: AppTextStyles.labelMd.copyWith(
+                      color: AppColors.onSecondaryFixed,
+                    ),
                   ),
                 ],
               ),

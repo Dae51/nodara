@@ -34,8 +34,11 @@ class DetailTitleCard extends StatelessWidget {
                   color: AppColors.primaryFixed,
                   shape: BoxShape.circle,
                 ),
-                child: Icon(opportunity.causa.chipIcon,
-                    size: 22, color: AppColors.primary),
+                child: Icon(
+                  opportunity.causa.chipIcon,
+                  size: 22,
+                  color: AppColors.primary,
+                ),
               ),
               const SizedBox(width: AppSpacing.sm),
               Expanded(
@@ -54,8 +57,11 @@ class DetailTitleCard extends StatelessWidget {
                         ),
                         if (opportunity.verificada) ...[
                           const SizedBox(width: 4),
-                          const Icon(Icons.verified,
-                              size: 16, color: AppColors.primary),
+                          const Icon(
+                            Icons.verified,
+                            size: 16,
+                            color: AppColors.primary,
+                          ),
                         ],
                       ],
                     ),
@@ -64,16 +70,18 @@ class DetailTitleCard extends StatelessWidget {
                       children: [
                         Container(
                           padding: const EdgeInsets.symmetric(
-                              horizontal: 8, vertical: 2),
+                            horizontal: 8,
+                            vertical: 2,
+                          ),
                           decoration: BoxDecoration(
                             color: AppColors.surfaceContainerHigh,
-                            borderRadius:
-                                BorderRadius.circular(AppRadius.pill),
+                            borderRadius: BorderRadius.circular(AppRadius.pill),
                           ),
                           child: Text(
                             'ONG Aliada Universitaria',
                             style: AppTextStyles.labelSm.copyWith(
-                                color: AppColors.onSurfaceVariant),
+                              color: AppColors.onSurfaceVariant,
+                            ),
                           ),
                         ),
                         const SizedBox(width: 6),
@@ -81,7 +89,8 @@ class DetailTitleCard extends StatelessWidget {
                           Text(
                             '• $rating ★ (${opportunity.resenas} reseñas)',
                             style: AppTextStyles.labelSm.copyWith(
-                                color: AppColors.onSurfaceVariant),
+                              color: AppColors.onSurfaceVariant,
+                            ),
                           ),
                       ],
                     ),
@@ -112,17 +121,21 @@ class DetailSpecSheet extends StatelessWidget {
               Expanded(
                 child: Row(
                   children: [
-                    const Icon(Icons.event_available,
-                        size: 18, color: AppColors.primary),
+                    const Icon(
+                      Icons.event_available,
+                      size: 18,
+                      color: AppColors.primary,
+                    ),
                     const SizedBox(width: 6),
-                    Text('Detalles de la Convocatoria',
-                        style: AppTextStyles.titleSm),
+                    Text(
+                      'Detalles de la Convocatoria',
+                      style: AppTextStyles.titleSm,
+                    ),
                   ],
                 ),
               ),
               Container(
-                padding:
-                    const EdgeInsets.symmetric(horizontal: 8, vertical: 2),
+                padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 2),
                 decoration: BoxDecoration(
                   color: AppColors.primaryFixed,
                   borderRadius: BorderRadius.circular(AppRadius.pill),
@@ -130,7 +143,9 @@ class DetailSpecSheet extends StatelessWidget {
                 child: Text(
                   'Ciclo 2025-1',
                   style: AppTextStyles.labelSm.copyWith(
-                      color: AppColors.primary, fontWeight: FontWeight.w600),
+                    color: AppColors.primary,
+                    fontWeight: FontWeight.w600,
+                  ),
                 ),
               ),
             ],
@@ -183,20 +198,29 @@ class _HoursHighlight extends StatelessWidget {
               color: AppColors.secondaryContainer,
               shape: BoxShape.circle,
             ),
-            child: const Icon(Icons.timer,
-                size: 18, color: AppColors.onSecondaryFixed),
+            child: const Icon(
+              Icons.timer,
+              size: 18,
+              color: AppColors.onSecondaryFixed,
+            ),
           ),
           const SizedBox(width: AppSpacing.sm),
           Expanded(
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
-                Text('Horas de servicio social',
-                    style: AppTextStyles.labelSm
-                        .copyWith(color: AppColors.onSurfaceVariant)),
-                Text('$hours horas certificadas',
-                    style: AppTextStyles.titleMd
-                        .copyWith(fontWeight: FontWeight.w700)),
+                Text(
+                  'Horas de servicio social',
+                  style: AppTextStyles.labelSm.copyWith(
+                    color: AppColors.onSurfaceVariant,
+                  ),
+                ),
+                Text(
+                  '$hours horas certificadas',
+                  style: AppTextStyles.titleMd.copyWith(
+                    fontWeight: FontWeight.w700,
+                  ),
+                ),
               ],
             ),
           ),
@@ -206,9 +230,12 @@ class _HoursHighlight extends StatelessWidget {
               color: AppColors.secondaryContainer,
               borderRadius: BorderRadius.circular(AppRadius.pill),
             ),
-            child: Text('Válido UV',
-                style: AppTextStyles.labelSm
-                    .copyWith(color: AppColors.onSecondaryFixed)),
+            child: Text(
+              'Válido UV',
+              style: AppTextStyles.labelSm.copyWith(
+                color: AppColors.onSecondaryFixed,
+              ),
+            ),
           ),
         ],
       ),
@@ -235,14 +262,19 @@ class _SpotsBlock extends StatelessWidget {
             children: [
               const Icon(Icons.group, size: 16, color: AppColors.tertiary),
               const SizedBox(width: 4),
-              Text('Cupos disponibles',
-                  style: AppTextStyles.labelMd
-                      .copyWith(color: AppColors.onSurfaceVariant)),
+              Text(
+                'Cupos disponibles',
+                style: AppTextStyles.labelMd.copyWith(
+                  color: AppColors.onSurfaceVariant,
+                ),
+              ),
               const Spacer(),
               Text(
                 '${opportunity.cuposLibres} de ${opportunity.cuposTotal} lugares libres',
-                style: AppTextStyles.labelMd
-                    .copyWith(color: AppColors.primary, fontWeight: FontWeight.w700),
+                style: AppTextStyles.labelMd.copyWith(
+                  color: AppColors.primary,
+                  fontWeight: FontWeight.w700,
+                ),
               ),
             ],
           ),
@@ -255,8 +287,9 @@ class _SpotsBlock extends StatelessWidget {
               const SizedBox(width: AppSpacing.sm),
               Text(
                 'Ya se sumaron ${opportunity.cuposOcupados} compañeros',
-                style: AppTextStyles.bodySm
-                    .copyWith(color: AppColors.onSurfaceVariant),
+                style: AppTextStyles.bodySm.copyWith(
+                  color: AppColors.onSurfaceVariant,
+                ),
               ),
             ],
           ),

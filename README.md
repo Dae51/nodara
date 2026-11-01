@@ -18,6 +18,9 @@ flutter analyze   # debe dar 0 hallazgos
 flutter test
 ```
 
+Para cargar datos de demostración en Firebase, consulta
+[`docs/SEEDER_FIREBASE.md`](docs/SEEDER_FIREBASE.md).
+
 **Cuentas de prueba en modo Fake** (cualquier contraseña de 6 o más caracteres):
 
 | Correo | Rol |
@@ -44,6 +47,10 @@ Pantalla → Provider (ChangeNotifier) → Repository → DataSource (Firebase |
 1. Crea `lib/data/datasources/firebase/firebase_<modulo>_data_source.dart` que implemente el contrato.
 2. Cámbialo en `AppDependencies.firebase()` (`lib/core/di/app_dependencies.dart`).
 3. Las pantallas no se tocan.
+
+Actualmente, el modo Firebase conecta Auth, oportunidades, postulaciones,
+puntos de donación y notificaciones. Certificados continúa con la fuente fake
+hasta que exista su flujo de emisión y validación en Firestore.
 
 ## Dueños por módulo
 

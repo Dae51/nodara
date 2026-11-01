@@ -47,20 +47,20 @@ class Benefit {
   });
 
   factory Benefit.fromMap(Map<String, Object?> map) => Benefit(
-        iconKey: readString(map['iconKey'], 'star'),
-        titulo: readString(map['titulo']),
-        subtitulo: readString(map['subtitulo']),
-      );
+    iconKey: readString(map['iconKey'], 'star'),
+    titulo: readString(map['titulo']),
+    subtitulo: readString(map['subtitulo']),
+  );
 
   final String iconKey;
   final String titulo;
   final String subtitulo;
 
   Map<String, Object?> toMap() => {
-        'iconKey': iconKey,
-        'titulo': titulo,
-        'subtitulo': subtitulo,
-      };
+    'iconKey': iconKey,
+    'titulo': titulo,
+    'subtitulo': subtitulo,
+  };
 }
 
 /// Convocatoria publicada por una organización.
@@ -77,6 +77,8 @@ class Opportunity {
     this.modalidad = Modalidad.presencial,
     required this.etiqueta,
     this.departamento = 'San Salvador',
+    this.lat = 0,
+    this.lng = 0,
     required this.ubicacion,
     this.direccion = '',
     this.referencia = '',
@@ -111,10 +113,15 @@ class Opportunity {
         descripcion: readString(map['descripcion']),
         causa: readEnum(Causa.values, map['causa'], Causa.comunidades),
         formato: readEnum(Formato.values, map['formato'], Formato.jornada),
-        modalidad:
-            readEnum(Modalidad.values, map['modalidad'], Modalidad.presencial),
+        modalidad: readEnum(
+          Modalidad.values,
+          map['modalidad'],
+          Modalidad.presencial,
+        ),
         etiqueta: readString(map['etiqueta']),
         departamento: readString(map['departamento'], 'San Salvador'),
+        lat: readDouble(map['lat']) ?? 0,
+        lng: readDouble(map['lng']) ?? 0,
         ubicacion: readString(map['ubicacion']),
         direccion: readString(map['direccion']),
         referencia: readString(map['referencia']),
@@ -122,15 +129,17 @@ class Opportunity {
         compromiso: readString(map['compromiso']),
         fechaInicio: readDate(map['fechaInicio']),
         fechaFin: readDate(map['fechaFin']),
-        cierreInscripcion: readDate(map['cierreInscripcion']) ??
+        cierreInscripcion:
+            readDate(map['cierreInscripcion']) ??
             DateTime.fromMillisecondsSinceEpoch(0),
         acreditaHoras: readBool(map['acreditaHoras'], true),
         horasEstimadas: readInt(map['horasEstimadas']),
         cuposTotal: readInt(map['cuposTotal']),
         cuposOcupados: readInt(map['cuposOcupados']),
         requisitos: readStringList(map['requisitos']),
-        beneficios:
-            readMapList(map['beneficios']).map(Benefit.fromMap).toList(),
+        beneficios: readMapList(map['beneficios'])
+            .map(Benefit.fromMap)
+            .toList(),
         imagenUrl: readString(map['imagenUrl']),
         avataresInscritos: readStringList(map['avataresInscritos']),
         calificacion: readDouble(map['calificacion']),
@@ -154,6 +163,11 @@ class Opportunity {
   /// Texto de la insignia, ej. "Educación · Programa".
   final String etiqueta;
   final String departamento;
+
+  /// Coordenadas reales del punto de encuentro.
+  final double lat;
+  final double lng;
+
   final String ubicacion;
   final String direccion;
 
@@ -202,43 +216,41 @@ class Opportunity {
       activa && (ahora ?? DateTime.now()).isBefore(cierreInscripcion);
 
   Map<String, Object?> toMap() => {
-        'orgId': orgId,
-        'orgNombre': orgNombre,
-        'titulo': titulo,
-        'tituloCorto': tituloCorto,
-        'descripcion': descripcion,
-        'causa': causa.name,
-        'formato': formato.name,
-        'modalidad': modalidad.name,
-        'etiqueta': etiqueta,
-        'departamento': departamento,
-        'ubicacion': ubicacion,
-        'direccion': direccion,
-        'referencia': referencia,
-        'horario': horario,
-        'compromiso': compromiso,
-        'fechaInicio': fechaInicio,
-        'fechaFin': fechaFin,
-        'cierreInscripcion': cierreInscripcion,
-        'acreditaHoras': acreditaHoras,
-        'horasEstimadas': horasEstimadas,
-        'cuposTotal': cuposTotal,
-        'cuposOcupados': cuposOcupados,
-        'requisitos': requisitos,
-        'beneficios': beneficios.map((b) => b.toMap()).toList(),
-        'imagenUrl': imagenUrl,
-        'avataresInscritos': avataresInscritos,
-        'calificacion': calificacion,
-        'resenas': resenas,
-        'verificada': verificada,
-        'activa': activa,
-      };
+    'orgId': orgId,
+    'orgNombre': orgNombre,
+    'titulo': titulo,
+    'tituloCorto': tituloCorto,
+    'descripcion': descripcion,
+    'causa': causa.name,
+    'formato': formato.name,
+    'modalidad': modalidad.name,
+    'etiqueta': etiqueta,
+    'departamento': departamento,
+    'lat': lat,
+    'lng': lng,
+    'ubicacion': ubicacion,
+    'direccion': direccion,
+    'referencia': referencia,
+    'horario': horario,
+    'compromiso': compromiso,
+    'fechaInicio': fechaInicio,
+    'fechaFin': fechaFin,
+    'cierreInscripcion': cierreInscripcion,
+    'acreditaHoras': acreditaHoras,
+    'horasEstimadas': horasEstimadas,
+    'cuposTotal': cuposTotal,
+    'cuposOcupados': cuposOcupados,
+    'requisitos': requisitos,
+    'beneficios': beneficios.map((b) => b.toMap()).toList(),
+    'imagenUrl': imagenUrl,
+    'avataresInscritos': avataresInscritos,
+    'calificacion': calificacion,
+    'resenas': resenas,
+    'verificada': verificada,
+    'activa': activa,
+  };
 
-  Opportunity copyWith({
-    String? id,
-    int? cuposOcupados,
-    bool? activa,
-  }) =>
+  Opportunity copyWith({String? id, int? cuposOcupados, bool? activa}) =>
       Opportunity(
         id: id ?? this.id,
         orgId: orgId,
@@ -251,6 +263,8 @@ class Opportunity {
         modalidad: modalidad,
         etiqueta: etiqueta,
         departamento: departamento,
+        lat: lat,
+        lng: lng,
         ubicacion: ubicacion,
         direccion: direccion,
         referencia: referencia,

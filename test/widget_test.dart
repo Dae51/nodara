@@ -213,5 +213,42 @@ void main() {
       // 20 + 25 horas de las dos postulaciones completadas del seed.
       expect(find.text('45 / 80 hrs'), findsOneWidget);
     });
+
+    testWidgets('la búsqueda sin resultados muestra el vacío y se limpia', (
+      tester,
+    ) async {
+      await _pumpApp(tester);
+
+      await tester.enterText(find.byType(TextField), 'zzz');
+      await tester.pumpAndSettle();
+
+      expect(
+        find.text('No encontramos voluntariados con esos filtros.'),
+        findsOneWidget,
+      );
+      expect(find.text('Limpiar filtros'), findsOneWidget);
+
+      await _tap(tester, find.text('Limpiar filtros'));
+
+      expect(
+        find.text('Campaña de Salud y Prevención Dental Comunitaria'),
+        findsOneWidget,
+      );
+    });
+
+    testWidgets('el selector muestra donaciones y filtra por causa', (
+      tester,
+    ) async {
+      await _pumpApp(tester);
+
+      await _tap(tester, find.text('Donar'));
+
+      expect(find.text('Puntos de donación'), findsOneWidget);
+
+      await _tap(tester, find.text('Animales'));
+
+      expect(find.text('Refugio Patitas Felices'), findsOneWidget);
+      expect(find.text('Centro de acopio Red Solidaria'), findsNothing);
+    });
   });
 }

@@ -5,6 +5,10 @@ import 'package:nodara/data/datasources/fake/fake_donation_data_source.dart';
 import 'package:nodara/data/datasources/fake/fake_notification_data_source.dart';
 import 'package:nodara/data/datasources/fake/fake_opportunity_data_source.dart';
 import 'package:nodara/data/datasources/firebase/firebase_auth_data_source.dart';
+import 'package:nodara/data/datasources/firebase/firebase_application_data_source.dart';
+import 'package:nodara/data/datasources/firebase/firebase_donation_data_source.dart';
+import 'package:nodara/data/datasources/firebase/firebase_notification_data_source.dart';
+import 'package:nodara/data/datasources/firebase/firebase_opportunity_data_source.dart';
 import 'package:nodara/data/preferences/app_preferences.dart';
 import 'package:nodara/data/repositories/application_repository.dart';
 import 'package:nodara/data/repositories/auth_repository.dart';
@@ -43,15 +47,14 @@ class AppDependencies {
         preferences: InMemoryAppPreferences(visto: onboardingVisto),
       );
 
-  /// Firebase real. Cada integrante cambia su Fake por la versión Firebase
-  /// cuando la termine (F2: oportunidades y donaciones, F3: postulaciones,
-  /// F4: notificaciones, F5: certificados).
+  /// Firebase real. Los módulos aún no migrados conservan su Fake hasta tener
+  /// su DataSource Firestore y reglas probadas.
   factory AppDependencies.firebase() => AppDependencies(
         auth: AuthRepository(FirebaseAuthDataSource()),
-        opportunities: OpportunityRepository(FakeOpportunityDataSource()),
-        applications: ApplicationRepository(FakeApplicationDataSource()),
-        donations: DonationRepository(FakeDonationDataSource()),
-        notifications: NotificationRepository(FakeNotificationDataSource()),
+        opportunities: OpportunityRepository(FirebaseOpportunityDataSource()),
+        applications: ApplicationRepository(FirebaseApplicationDataSource()),
+        donations: DonationRepository(FirebaseDonationDataSource()),
+        notifications: NotificationRepository(FirebaseNotificationDataSource()),
         certificates: CertificateRepository(FakeCertificateDataSource()),
         preferences: SharedAppPreferences(),
       );

@@ -27,21 +27,29 @@ class ApplyBar extends StatelessWidget {
         top: false,
         child: Padding(
           padding: const EdgeInsets.symmetric(
-              horizontal: AppSpacing.md, vertical: 12),
+            horizontal: AppSpacing.md,
+            vertical: 12,
+          ),
           child: Row(
             children: [
               Column(
                 mainAxisSize: MainAxisSize.min,
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
-                  Text('Reconocimiento',
-                      style: AppTextStyles.labelSm
-                          .copyWith(color: AppColors.onSurfaceVariant)),
+                  Text(
+                    'Reconocimiento',
+                    style: AppTextStyles.labelSm.copyWith(
+                      color: AppColors.onSurfaceVariant,
+                    ),
+                  ),
                   Row(
                     children: [
-                      Text('$hours hrs',
-                          style: AppTextStyles.titleLg
-                              .copyWith(fontWeight: FontWeight.w700)),
+                      Text(
+                        '$hours hrs',
+                        style: AppTextStyles.titleLg.copyWith(
+                          fontWeight: FontWeight.w700,
+                        ),
+                      ),
                       const SizedBox(width: 4),
                       Container(
                         width: 8,
@@ -78,7 +86,9 @@ class ApplyBar extends StatelessWidget {
                       const SizedBox(width: AppSpacing.xs),
                       Flexible(
                         child: Text(
-                          hasApplied ? '¡Ya estás postulado!' : 'Postularme ahora',
+                          hasApplied
+                              ? '¡Ya estás postulado!'
+                              : 'Postularme ahora',
                           style: AppTextStyles.labelLg.copyWith(
                             color: Colors.white,
                             fontWeight: FontWeight.w700,
@@ -91,15 +101,19 @@ class ApplyBar extends StatelessWidget {
                         const SizedBox(width: AppSpacing.xs),
                         Container(
                           padding: const EdgeInsets.symmetric(
-                              horizontal: 6, vertical: 2),
+                            horizontal: 6,
+                            vertical: 2,
+                          ),
                           decoration: BoxDecoration(
                             color: Colors.white.withValues(alpha: 0.2),
-                            borderRadius:
-                                BorderRadius.circular(AppRadius.xs),
+                            borderRadius: BorderRadius.circular(AppRadius.xs),
                           ),
-                          child: Text('1 paso',
-                              style: AppTextStyles.labelSm
-                                  .copyWith(color: Colors.white)),
+                          child: Text(
+                            '1 paso',
+                            style: AppTextStyles.labelSm.copyWith(
+                              color: Colors.white,
+                            ),
+                          ),
                         ),
                       ],
                     ],

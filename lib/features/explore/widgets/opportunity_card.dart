@@ -132,7 +132,9 @@ class _CardHeader extends StatelessWidget {
             top: 6,
             right: 6,
             child: Tooltip(
-              message: isFavorite ? 'Quitar de favoritos' : 'Guardar en favoritos',
+              message: isFavorite
+                  ? 'Quitar de favoritos'
+                  : 'Guardar en favoritos',
               child: InkWell(
                 customBorder: const CircleBorder(),
                 onTap: onFavorite,
@@ -141,8 +143,9 @@ class _CardHeader extends StatelessWidget {
                   height: 48,
                   child: Center(
                     child: Material(
-                      color: AppColors.surfaceContainerLowest
-                          .withValues(alpha: 0.9),
+                      color: AppColors.surfaceContainerLowest.withValues(
+                        alpha: 0.9,
+                      ),
                       shape: const CircleBorder(),
                       child: SizedBox(
                         width: 36,
@@ -184,8 +187,9 @@ class _MetaRow extends StatelessWidget {
             text,
             maxLines: 1,
             overflow: TextOverflow.ellipsis,
-            style:
-                AppTextStyles.bodySm.copyWith(color: AppColors.onSurfaceVariant),
+            style: AppTextStyles.bodySm.copyWith(
+              color: AppColors.onSurfaceVariant,
+            ),
           ),
         ),
       ],
@@ -212,8 +216,9 @@ class _HoursBadge extends StatelessWidget {
           ),
           child: Text(
             '$hours hrs acreditables',
-            style: AppTextStyles.labelSm
-                .copyWith(color: AppColors.onSecondaryContainer),
+            style: AppTextStyles.labelSm.copyWith(
+              color: AppColors.onSecondaryContainer,
+            ),
           ),
         ),
       ],

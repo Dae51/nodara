@@ -18,6 +18,26 @@ service cloud.firestore {
         && get(/databases/$(database)/documents/users/$(request.auth.uid)).data.rol == 'organizacion';
     }
 
+    function validApplicationTransition(previous, next) {
+      return (previous == 'pendiente' &&
+              (next == 'enRevision' || next == 'rechazado' || next == 'retirado'))
+        || (previous == 'enRevision' &&
+              (next == 'entrevista' || next == 'aceptado' || next == 'listaEspera'
+               || next == 'rechazado' || next == 'retirado'))
+        || (previous == 'entrevista' &&
+              (next == 'aceptado' || next == 'listaEspera' || next == 'rechazado'
+               || next == 'retirado'))
+        || (previous == 'listaEspera' &&
+              (next == 'aceptado' || next == 'rechazado' || next == 'retirado'))
+        || (previous == 'aceptado' &&
+              (next == 'confirmado' || next == 'enCurso' || next == 'cancelado'
+               || next == 'retirado'))
+        || (previous == 'confirmado' &&
+              (next == 'enCurso' || next == 'cancelado' || next == 'retirado'))
+        || (previous == 'enCurso' &&
+              (next == 'completado' || next == 'noShow' || next == 'cancelado'));
+    }
+
     // Perfil: cada quien lee y edita el suyo; el rol no se puede cambiar.
     match /users/{uid} {
       allow read, create: if isOwner(uid);
@@ -50,9 +70,19 @@ service cloud.firestore {
         && request.resource.data.userId == request.auth.uid
         && request.resource.data.estado == 'pendiente';
       allow update: if signedIn()
+        && request.resource.data.userId == resource.data.userId
+        && request.resource.data.orgId == resource.data.orgId
+        && request.resource.data.opportunityId == resource.data.opportunityId
+        && validApplicationTransition(
+             resource.data.estado, request.resource.data.estado)
         && ((resource.data.userId == request.auth.uid
-             && request.resource.data.estado == 'retirado')
-            || resource.data.orgId == request.auth.uid);
+             && request.resource.data.estado == 'retirado'
+             && request.resource.data.diff(resource.data).affectedKeys()
+                  .hasOnly(['estado', 'motivo', 'actualizadaEn', 'historial']))
+            || (resource.data.orgId == request.auth.uid
+                && request.resource.data.diff(resource.data).affectedKeys()
+                  .hasOnly(['estado', 'horasAcreditadas', 'motivo',
+                            'actualizadaEn', 'historial'])));
     }
 
     // Puntos de donación: lectura con sesión; escritura de la org dueña.

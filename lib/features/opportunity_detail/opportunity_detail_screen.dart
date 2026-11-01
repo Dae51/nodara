@@ -40,8 +40,9 @@ class _OpportunityDetailScreenState extends State<OpportunityDetailScreen> {
   }
 
   Future<void> _toggleBookmark(Opportunity opportunity) async {
-    final added =
-        await context.read<AuthProvider>().toggleFavorite(opportunity.id);
+    final added = await context.read<AuthProvider>().toggleFavorite(
+      opportunity.id,
+    );
     if (!mounted) return;
     showAppToast(
       context,
@@ -75,8 +76,9 @@ class _OpportunityDetailScreenState extends State<OpportunityDetailScreen> {
 
   @override
   Widget build(BuildContext context) {
-    final opportunity =
-        context.watch<ExploreProvider>().byId(widget.opportunityId);
+    final opportunity = context.watch<ExploreProvider>().byId(
+      widget.opportunityId,
+    );
     if (opportunity == null) {
       return Scaffold(
         appBar: AppBar(),
@@ -88,8 +90,9 @@ class _OpportunityDetailScreenState extends State<OpportunityDetailScreen> {
     }
 
     final isFavorite = context.watch<AuthProvider>().isFavorite(opportunity.id);
-    final hasApplied =
-        context.watch<ApplicationsProvider>().hasApplied(opportunity.id);
+    final hasApplied = context.watch<ApplicationsProvider>().hasApplied(
+      opportunity.id,
+    );
 
     return Scaffold(
       appBar: AppBar(

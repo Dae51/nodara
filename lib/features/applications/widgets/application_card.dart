@@ -138,6 +138,11 @@ class _StatusBadge extends StatelessWidget {
           AppColors.surfaceContainerHigh,
           AppColors.onSurfaceVariant,
         ),
+      _ => (
+          Icons.pending_actions,
+          AppColors.surfaceContainerHigh,
+          AppColors.onSurfaceVariant,
+        ),
     };
 
     return Container(
@@ -236,6 +241,11 @@ class _InfoBox extends StatelessWidget {
           Icons.undo,
           'Te retiraste de esta convocatoria',
           'Puedes volver a postularte si sigue vigente',
+        ),
+      _ => (
+          Icons.pending_actions,
+          application.estado.label,
+          application.motivo ?? 'La organización está actualizando tu solicitud',
         ),
     };
     final completed = application.estado == EstadoPostulacion.completado;

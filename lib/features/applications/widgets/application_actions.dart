@@ -23,6 +23,8 @@ class ApplicationActions extends StatelessWidget {
   Widget build(BuildContext context) {
     switch (application.estado) {
       case EstadoPostulacion.aceptado:
+      case EstadoPostulacion.confirmado:
+      case EstadoPostulacion.enCurso:
         return Column(
           children: [
             Row(
@@ -57,6 +59,9 @@ class ApplicationActions extends StatelessWidget {
           ],
         );
       case EstadoPostulacion.pendiente:
+      case EstadoPostulacion.enRevision:
+      case EstadoPostulacion.entrevista:
+      case EstadoPostulacion.listaEspera:
         return Column(
           children: [
             _LightButton(
@@ -100,6 +105,8 @@ class ApplicationActions extends StatelessWidget {
         );
       case EstadoPostulacion.rechazado:
       case EstadoPostulacion.retirado:
+      case EstadoPostulacion.noShow:
+      case EstadoPostulacion.cancelado:
         return _LightButton(
           icon: Icons.visibility_outlined,
           label: 'Ver detalle',

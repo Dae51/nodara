@@ -38,6 +38,13 @@ class ApplicationRepository {
         estado: EstadoPostulacion.pendiente,
         creadaEn: ahora,
         actualizadaEn: ahora,
+        historial: [
+          ApplicationStatusChange(
+            estado: EstadoPostulacion.pendiente,
+            en: ahora,
+            actorId: user.uid,
+          ),
+        ],
       ),
     );
   }

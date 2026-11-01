@@ -35,8 +35,11 @@ class GoalBanner extends StatelessWidget {
                   color: AppColors.primary,
                   shape: BoxShape.circle,
                 ),
-                child: const Icon(Icons.emoji_events,
-                    size: 20, color: Colors.white),
+                child: const Icon(
+                  Icons.emoji_events,
+                  size: 20,
+                  color: Colors.white,
+                ),
               ),
               const SizedBox(width: AppSpacing.sm),
               Expanded(
@@ -47,15 +50,17 @@ class GoalBanner extends StatelessWidget {
                       horasFaltantes == 0
                           ? '¡Meta de horas cumplida!'
                           : '¡Meta semestral al $porcentaje%!',
-                      style: AppTextStyles.titleSm
-                          .copyWith(color: AppColors.onPrimaryFixed),
+                      style: AppTextStyles.titleSm.copyWith(
+                        color: AppColors.onPrimaryFixed,
+                      ),
                     ),
                     Text(
                       horasFaltantes == 0
                           ? 'Ya puedes descargar tu reporte de horas.'
                           : 'Sumá $horasFaltantes horas más para validar tu crédito social.',
-                      style: AppTextStyles.bodySm
-                          .copyWith(color: AppColors.onSurfaceVariant),
+                      style: AppTextStyles.bodySm.copyWith(
+                        color: AppColors.onSurfaceVariant,
+                      ),
                     ),
                   ],
                 ),

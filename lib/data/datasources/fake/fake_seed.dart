@@ -14,26 +14,26 @@ abstract final class FakeSeed {
   static const orgFuturoId = 'org_futuro';
 
   static AppUser get sofia => AppUser(
-        uid: sofiaId,
-        nombre: 'Sofía',
-        email: 'sofia@nodara.app',
-        tipo: TipoUsuario.estudiante,
-        rol: RolUsuario.voluntario,
-        intereses: const [Causa.educacion, Causa.medioambiente],
-        horasRequeridas: 80,
-        carrera: 'Servicio Social',
-        avatarUrl: RemoteAssets.sofiaAvatar,
-        creadoEn: DateTime(2026, 2, 1),
-      );
+    uid: sofiaId,
+    nombre: 'Sofía',
+    email: 'sofia@nodara.app',
+    tipo: TipoUsuario.estudiante,
+    rol: RolUsuario.voluntario,
+    intereses: const [Causa.educacion, Causa.medioambiente],
+    horasRequeridas: 80,
+    carrera: 'Servicio Social',
+    avatarUrl: RemoteAssets.sofiaAvatar,
+    creadoEn: DateTime(2026, 2, 1),
+  );
 
   /// Cuenta de organización para probar el panel org (F3).
   static AppUser get orgFuturo => AppUser(
-        uid: orgFuturoId,
-        nombre: 'Fundación Futuro Joven',
-        email: 'org@nodara.app',
-        rol: RolUsuario.organizacion,
-        creadoEn: DateTime(2026, 1, 15),
-      );
+    uid: orgFuturoId,
+    nombre: 'Fundación Futuro Joven',
+    email: 'org@nodara.app',
+    rol: RolUsuario.organizacion,
+    creadoEn: DateTime(2026, 1, 15),
+  );
 
   static List<AppUser> get users => [sofia, orgFuturo];
 
@@ -46,11 +46,12 @@ abstract final class FakeSeed {
         orgNombre: 'Fundación Futuro Joven & Facultad de Ciencias',
         titulo: 'Tutorías Universitarias de Matemáticas y Apoyo Escolar',
         tituloCorto: 'Tutorías de Matemáticas y Ciencias',
-        descripcion:
-            'Este programa acompaña a más de 45 adolescentes de barrios vulnerables que cursan los últimos años de secundaria y preparatoria. Como tutor voluntario, facilitarás talleres de refuerzo práctico en álgebra básica, resolución de problemas y razonamiento lógico.',
+        descripcion: 'Este programa acompaña a más de 45 adolescentes de barrios vulnerables que cursan los últimos años de secundaria y preparatoria. Como tutor voluntario, facilitarás talleres de refuerzo práctico en álgebra básica, resolución de problemas y razonamiento lógico.',
         causa: Causa.educacion,
         formato: Formato.programa,
         etiqueta: 'Educación · Escolar',
+        lat: 13.6929,
+        lng: -89.2182,
         ubicacion: 'Centro Comunitario San Martín',
         direccion: 'Av. San Martín 1420',
         referencia: 'A 2 cuadras del Campus Central',
@@ -77,14 +78,12 @@ abstract final class FakeSeed {
           Benefit(
             iconKey: 'seguro',
             titulo: 'Póliza y Cobertura Integral',
-            subtitulo:
-                'Seguro contra accidentes de voluntariado durante las actividades.',
+            subtitulo: 'Seguro contra accidentes de voluntariado durante las actividades.',
           ),
           Benefit(
             iconKey: 'refrigerio',
             titulo: 'Refrigerio y Materiales Incluidos',
-            subtitulo:
-                'Kit de enseñanza, cuadernillos y snack energizante en cada sesión.',
+            subtitulo: 'Kit de enseñanza, cuadernillos y snack energizante en cada sesión.',
           ),
         ],
         imagenUrl: RemoteAssets.detailHero,
@@ -101,11 +100,12 @@ abstract final class FakeSeed {
         orgId: 'org_ecovida',
         orgNombre: 'EcoVida ONG',
         titulo: 'Jornada de Reforestación y Limpieza de Cuencas',
-        descripcion:
-            'Sumate a la restauración de la ribera plantando especies nativas y limpiando las cuencas del sector. Una jornada en equipo para recuperar el ecosistema local y crear conciencia ambiental.',
+        descripcion: 'Sumate a la restauración de la ribera plantando especies nativas y limpiando las cuencas del sector. Una jornada en equipo para recuperar el ecosistema local y crear conciencia ambiental.',
         causa: Causa.medioambiente,
         formato: Formato.jornada,
         etiqueta: 'Medio Ambiente',
+        lat: 13.7034,
+        lng: -89.2370,
         ubicacion: 'Reserva Ribereña',
         horario: 'Jornadas de sábado, 8:00 a 14:00 hrs',
         compromiso: 'Próxima jornada: 20 de Abril',
@@ -132,7 +132,10 @@ abstract final class FakeSeed {
           ),
         ],
         imagenUrl: RemoteAssets.reforestacionImage,
-        avataresInscritos: const [RemoteAssets.attendee2, RemoteAssets.attendee3],
+        avataresInscritos: const [
+          RemoteAssets.attendee2,
+          RemoteAssets.attendee3,
+        ],
         calificacion: 4.7,
         resenas: 86,
       ),
@@ -141,11 +144,12 @@ abstract final class FakeSeed {
         orgId: 'org_cruz',
         orgNombre: 'Cruz Universitaria',
         titulo: 'Campaña de Salud y Prevención Dental Comunitaria',
-        descripcion:
-            'Acompañá a las familias del barrio en la campaña de prevención y educación en salud bucal. Colaborás en la recepción, organización de turnos y talleres de higiene para niños.',
+        descripcion: 'Acompañá a las familias del barrio en la campaña de prevención y educación en salud bucal. Colaborás en la recepción, organización de turnos y talleres de higiene para niños.',
         causa: Causa.salud,
         formato: Formato.jornada,
         etiqueta: 'Salud Comunitaria',
+        lat: 13.6769,
+        lng: -89.2500,
         ubicacion: 'Centro de Salud Sur',
         horario: 'Sábado 9:00 a 15:00 hrs',
         compromiso: 'Inicia este sábado',
@@ -172,7 +176,10 @@ abstract final class FakeSeed {
           ),
         ],
         imagenUrl: RemoteAssets.saludImage,
-        avataresInscritos: const [RemoteAssets.attendee1, RemoteAssets.attendee3],
+        avataresInscritos: const [
+          RemoteAssets.attendee1,
+          RemoteAssets.attendee3,
+        ],
         calificacion: 4.8,
         resenas: 64,
       ),
@@ -232,50 +239,50 @@ abstract final class FakeSeed {
   }
 
   static List<DonationPoint> donationPoints() => const [
-        DonationPoint(
-          id: 'don_banco',
-          orgId: 'org_red_solidaria',
-          nombre: 'Centro de acopio Red Solidaria',
-          causa: Causa.comunidades,
-          aceptan: ['Víveres', 'Agua embotellada', 'Artículos de higiene'],
-          direccion: 'Col. Escalón, San Salvador',
-          lat: 13.7034,
-          lng: -89.2370,
-          horario: 'Lun a Vie · 8:00 a 17:00',
-        ),
-        DonationPoint(
-          id: 'don_refugio',
-          orgId: 'org_patitas',
-          nombre: 'Refugio Patitas Felices',
-          causa: Causa.animales,
-          aceptan: ['Concentrado', 'Mantas', 'Medicinas veterinarias'],
-          direccion: 'Santa Tecla, La Libertad',
-          departamento: 'La Libertad',
-          lat: 13.6769,
-          lng: -89.2797,
-          horario: 'Sáb y Dom · 9:00 a 13:00',
-        ),
-        DonationPoint(
-          id: 'don_ropa',
-          orgId: 'org_futuro',
-          nombre: 'Ropero Comunitario Futuro Joven',
-          causa: Causa.comunidades,
-          aceptan: ['Ropa en buen estado', 'Útiles escolares'],
-          direccion: 'Antiguo Cuscatlán, La Libertad',
-          departamento: 'La Libertad',
-          lat: 13.6730,
-          lng: -89.2500,
-          horario: 'Mar a Sáb · 9:00 a 16:00',
-        ),
-      ];
+    DonationPoint(
+      id: 'don_banco',
+      orgId: 'org_red_solidaria',
+      nombre: 'Centro de acopio Red Solidaria',
+      causa: Causa.comunidades,
+      aceptan: ['Víveres', 'Agua embotellada', 'Artículos de higiene'],
+      direccion: 'Col. Escalón, San Salvador',
+      lat: 13.7034,
+      lng: -89.2370,
+      horario: 'Lun a Vie · 8:00 a 17:00',
+    ),
+    DonationPoint(
+      id: 'don_refugio',
+      orgId: 'org_patitas',
+      nombre: 'Refugio Patitas Felices',
+      causa: Causa.animales,
+      aceptan: ['Concentrado', 'Mantas', 'Medicinas veterinarias'],
+      direccion: 'Santa Tecla, La Libertad',
+      departamento: 'La Libertad',
+      lat: 13.6769,
+      lng: -89.2797,
+      horario: 'Sáb y Dom · 9:00 a 13:00',
+    ),
+    DonationPoint(
+      id: 'don_ropa',
+      orgId: 'org_futuro',
+      nombre: 'Ropero Comunitario Futuro Joven',
+      causa: Causa.comunidades,
+      aceptan: ['Ropa en buen estado', 'Útiles escolares'],
+      direccion: 'Antiguo Cuscatlán, La Libertad',
+      departamento: 'La Libertad',
+      lat: 13.6730,
+      lng: -89.2500,
+      horario: 'Mar a Sáb · 9:00 a 16:00',
+    ),
+  ];
 
   static List<AppNotification> notifications() => [
-        AppNotification(
-          id: 'not_bienvenida',
-          titulo: '¡Bienvenida a NODARA!',
-          cuerpo: 'Explora voluntariados y puntos de donación cerca de ti.',
-          leida: true,
-          creadaEn: DateTime.now().subtract(const Duration(days: 30)),
-        ),
-      ];
+    AppNotification(
+      id: 'not_bienvenida',
+      titulo: '¡Bienvenida a NODARA!',
+      cuerpo: 'Explora voluntariados y puntos de donación cerca de ti.',
+      leida: true,
+      creadaEn: DateTime.now().subtract(const Duration(days: 30)),
+    ),
+  ];
 }

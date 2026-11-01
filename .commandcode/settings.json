@@ -1,7 +1,13 @@
 {
   "permissions": {
     "allow": [
-      "Shell(flutter:*)"
+      "Shell(flutter:*)",
+      "Shell(dart:*)",
+      "Shell(if:*)",
+      "Shell(then:*)",
+      "Shell(else:*)",
+      "Shell(fi:*)",
+      "Shell(npm:*)"
     ],
     "deny": [],
     "defaultMode": "default"
