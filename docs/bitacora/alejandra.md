@@ -49,3 +49,16 @@ Captura: alejandra-postulantes.png, obtenida de un test de widget con datos Fake
 
 Compilación Android aprobada: flutter build apk --debug --dart-define=NODARA_FAKE=true --no-pub en copia temporal con ruta ASCII. Se generó app-debug.apk. Gradle instaló Android SDK Platform 35 y CMake 3.22.1 que faltaban. No equivale a prueba en dispositivo. GitHub Actions del PR #5 aprobó analyze-and-test: https://github.com/Dae51/nodara/actions/runs/41500292198 .
 
+
+## Prueba con Firebase real del 2 de noviembre
+
+Se ejecutó la app Android con NODARA_FAKE=false en el emulador Pixel_8. En paralelo se abrió la versión web en localhost:5174. El acceso temporal de la organización se agregó solo a la copia work/nodara-build, para no modificar el panel de José en la rama.
+
+- La usuaria inició sesión personalmente con las cuentas de demostración. Los registros de Firebase Auth confirmaron la cuenta voluntaria seed-vol-01; la usuaria confirmó que cargaban las convocatorias.
+- La usuaria confirmó que Avisos cargaba y que tocar un aviso nuevo lo marcaba leído y disminuía el contador.
+- En la sesión web de Fundación Futuro Joven se abrió Tutorías de Matemáticas y Ciencias (seed-opp-01). Antes de responder había 15 cupos disponibles y una postulación pendiente de seed-vol-01.
+- Se confirmó Aceptar en esa postulación de demostración. La pantalla mostró 14 cupos disponibles, estado Seleccionado / En curso y el mensaje Respuesta guardada y aviso enviado. Se capturó evidencia de la pantalla.
+- La usuaria confirmó que llegó el nuevo aviso a la cuenta voluntaria y apareció la alerta local de Android. Recepción en tiempo real y notificación local verificadas en emulador; no se afirma prueba en un teléfono físico.
+
+La prueba modificó la postulación de demostración aceptada y ocupó un cupo real en Firebase; no se ejecutó el seeder ni se restablecieron datos del equipo. La operación simultánea desde varios coordinadores sigue fuera de lo garantizado por los contratos actuales.
+
