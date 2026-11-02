@@ -188,7 +188,10 @@ void main() {
       await tester.tap(find.text('Postularme ahora'));
       await tester.pumpAndSettle();
 
-      expect(find.text('¡Ya estás postulado!'), findsOneWidget);
+      expect(find.text('Confirmar postulación'), findsOneWidget);
+      await tester.tap(find.text('Confirmar'));
+      await tester.pumpAndSettle();
+      expect(find.text('Ver mi postulación'), findsOneWidget);
 
       await tester.tap(find.byIcon(Icons.arrow_back));
       await tester.pumpAndSettle();

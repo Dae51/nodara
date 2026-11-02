@@ -197,8 +197,7 @@ class DetailMapCard extends StatelessWidget {
                 label: const Text('Ver ruta'),
                 style: TextButton.styleFrom(
                   padding: EdgeInsets.zero,
-                  minimumSize: const Size(0, 0),
-                  tapTargetSize: MaterialTapTargetSize.shrinkWrap,
+                  minimumSize: const Size(48, 48),
                 ),
               ),
             ],

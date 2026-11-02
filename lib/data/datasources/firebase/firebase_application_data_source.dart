@@ -7,12 +7,12 @@ import 'package:nodara/data/models/application.dart';
 
 /// Implementación Firestore de las postulaciones.
 ///
-/// El cambio de estado se ejecuta en una transacción para no perder cupos ni
+/// El cambio de estado se ejecuta en una transacción para conservar
 /// el historial cuando dos coordinadores actúan al mismo tiempo. La validación
 /// final de permisos vive también en firestore.rules.
 class FirebaseApplicationDataSource implements ApplicationDataSource {
   FirebaseApplicationDataSource({FirebaseFirestore? firestore})
-      : _db = firestore ?? FirebaseFirestore.instance;
+    : _db = firestore ?? FirebaseFirestore.instance;
 
   final FirebaseFirestore _db;
 
@@ -23,17 +23,25 @@ class FirebaseApplicationDataSource implements ApplicationDataSource {
   Stream<List<Application>> watchByUser(String userId) => _applications
       .where('userId', isEqualTo: userId)
       .snapshots()
-      .map((snapshot) => snapshot.docs
-          .map((doc) => Application.fromMap(doc.id, fromFirestore(doc.data())))
-          .toList());
+      .map(
+        (snapshot) => snapshot.docs
+            .map(
+              (doc) => Application.fromMap(doc.id, fromFirestore(doc.data())),
+            )
+            .toList(),
+      );
 
   @override
   Stream<List<Application>> watchByOrg(String orgId) => _applications
       .where('orgId', isEqualTo: orgId)
       .snapshots()
-      .map((snapshot) => snapshot.docs
-          .map((doc) => Application.fromMap(doc.id, fromFirestore(doc.data())))
-          .toList());
+      .map(
+        (snapshot) => snapshot.docs
+            .map(
+              (doc) => Application.fromMap(doc.id, fromFirestore(doc.data())),
+            )
+            .toList(),
+      );
 
   @override
   Future<String> create(Application application) async {
@@ -52,7 +60,9 @@ class FirebaseApplicationDataSource implements ApplicationDataSource {
     await _db.runTransaction((transaction) async {
       final snapshot = await transaction.get(reference);
       final data = snapshot.data();
-      if (!snapshot.exists || data == null) throw StateError('Postulación no encontrada.');
+      if (!snapshot.exists || data == null) {
+        throw StateError('Postulación no encontrada.');
+      }
       final current = Application.fromMap(snapshot.id, fromFirestore(data));
       if (!current.estado.siguientes.contains(estado)) {
         throw StateError('Transición de estado no permitida.');
@@ -65,8 +75,10 @@ class FirebaseApplicationDataSource implements ApplicationDataSource {
       );
       transaction.update(reference, {
         'estado': estado.name,
-        'horasAcreditadas': horasAcreditadas,
-        'motivo': motivo,
+        // Retirarse no debe modificar las horas ni borrar datos anteriores.
+        if (horasAcreditadas != null && estado != EstadoPostulacion.retirado)
+          'horasAcreditadas': horasAcreditadas,
+        'motivo': ?motivo,
         'actualizadaEn': FieldValue.serverTimestamp(),
         'historial': FieldValue.arrayUnion([change.toMap()]),
       });

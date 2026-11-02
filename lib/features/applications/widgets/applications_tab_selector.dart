@@ -3,7 +3,7 @@ import 'package:flutter/material.dart';
 import 'package:nodara/theme/app_colors.dart';
 import 'package:nodara/theme/app_theme.dart';
 
-/// Pestañas Activas / Completadas / Historial (rechazadas y retiradas).
+/// Pestañas Activas / Completadas / Cerradas (rechazadas y retiradas).
 class ApplicationsTabSelector extends StatelessWidget {
   const ApplicationsTabSelector({
     super.key,
@@ -43,7 +43,7 @@ class ApplicationsTabSelector extends StatelessWidget {
             onTap: () => onChanged(1),
           ),
           _Tab(
-            label: 'Historial',
+            label: 'Cerradas',
             count: closedCount,
             isSelected: selected == 2,
             onTap: () => onChanged(2),
@@ -84,8 +84,11 @@ class _Tab extends StatelessWidget {
                 : Colors.transparent,
             borderRadius: BorderRadius.circular(AppRadius.sm),
           ),
-          child: Row(
-            mainAxisAlignment: MainAxisAlignment.center,
+          child: Wrap(
+            alignment: WrapAlignment.center,
+            crossAxisAlignment: WrapCrossAlignment.center,
+            spacing: 4,
+            runSpacing: 4,
             children: [
               Text(
                 label,
@@ -96,21 +99,25 @@ class _Tab extends StatelessWidget {
                 ),
               ),
               if (count != null) ...[
-                const SizedBox(width: 4),
                 Container(
-                  padding:
-                      const EdgeInsets.symmetric(horizontal: 6, vertical: 1),
+                  padding: const EdgeInsets.symmetric(
+                    horizontal: 6,
+                    vertical: 1,
+                  ),
                   decoration: BoxDecoration(
                     color: isSelected
                         ? AppColors.primaryFixed
                         : AppColors.surfaceContainer,
                     borderRadius: BorderRadius.circular(AppRadius.pill),
                   ),
-                  child: Text('$count',
-                      style: AppTextStyles.labelSm.copyWith(
-                          color: isSelected
-                              ? AppColors.primary
-                              : AppColors.onSurfaceVariant)),
+                  child: Text(
+                    '$count',
+                    style: AppTextStyles.labelSm.copyWith(
+                      color: isSelected
+                          ? AppColors.primary
+                          : AppColors.onSurfaceVariant,
+                    ),
+                  ),
                 ),
               ],
             ],

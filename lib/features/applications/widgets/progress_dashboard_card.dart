@@ -48,7 +48,10 @@ class ProgressDashboardCard extends StatelessWidget {
           Column(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
-              Row(
+              Wrap(
+                spacing: AppSpacing.sm,
+                runSpacing: AppSpacing.sm,
+                crossAxisAlignment: WrapCrossAlignment.center,
                 children: [
                   Text(
                     'PROGRESO UNIVERSITARIO',
@@ -57,10 +60,11 @@ class ProgressDashboardCard extends StatelessWidget {
                       letterSpacing: 1,
                     ),
                   ),
-                  const Spacer(),
                   Container(
                     padding: const EdgeInsets.symmetric(
-                        horizontal: 8, vertical: 2),
+                      horizontal: 8,
+                      vertical: 2,
+                    ),
                     decoration: BoxDecoration(
                       color: AppColors.secondaryFixed,
                       borderRadius: BorderRadius.circular(AppRadius.pill),
@@ -68,26 +72,32 @@ class ProgressDashboardCard extends StatelessWidget {
                     child: Row(
                       mainAxisSize: MainAxisSize.min,
                       children: [
-                        const Icon(Icons.school,
-                            size: 14, color: AppColors.onSecondaryFixed),
+                        const Icon(
+                          Icons.school,
+                          size: 14,
+                          color: AppColors.onSecondaryFixed,
+                        ),
                         const SizedBox(width: 4),
-                        Text('Servicio Social',
-                            style: AppTextStyles.labelSm
-                                .copyWith(color: AppColors.onSecondaryFixed)),
+                        Text(
+                          'Servicio Social',
+                          style: AppTextStyles.labelSm.copyWith(
+                            color: AppColors.onSecondaryFixed,
+                          ),
+                        ),
                       ],
                     ),
                   ),
                 ],
               ),
               const SizedBox(height: AppSpacing.sm),
-              Row(
-                crossAxisAlignment: CrossAxisAlignment.baseline,
-                textBaseline: TextBaseline.alphabetic,
+              Wrap(
+                crossAxisAlignment: WrapCrossAlignment.center,
                 children: [
                   Text(
                     '$horasCompletadas',
-                    style: AppTextStyles.displayLg
-                        .copyWith(color: AppColors.primary),
+                    style: AppTextStyles.displayLg.copyWith(
+                      color: AppColors.primary,
+                    ),
                   ),
                   const SizedBox(width: 6),
                   Text(
@@ -97,9 +107,12 @@ class ProgressDashboardCard extends StatelessWidget {
                     ),
                   ),
                   const SizedBox(width: 6),
-                  Text('horas',
-                      style: AppTextStyles.titleSm
-                          .copyWith(color: AppColors.onSecondaryContainer)),
+                  Text(
+                    'horas',
+                    style: AppTextStyles.titleSm.copyWith(
+                      color: AppColors.onSecondaryContainer,
+                    ),
+                  ),
                 ],
               ),
               const SizedBox(height: 4),
@@ -108,21 +121,23 @@ class ProgressDashboardCard extends StatelessWidget {
                   text: 'Horas de Servicio Social Acumuladas ',
                   children: [
                     TextSpan(
-                      text:
-                          '($progresoPorcentaje% del requisito completado)',
+                      text: '($progresoPorcentaje% del requisito completado)',
                       style: const TextStyle(fontWeight: FontWeight.w700),
                     ),
                   ],
                 ),
-                style: AppTextStyles.bodySm
-                    .copyWith(color: AppColors.onSecondaryContainer),
+                style: AppTextStyles.bodySm.copyWith(
+                  color: AppColors.onSecondaryContainer,
+                ),
               ),
               const SizedBox(height: AppSpacing.sm),
               ClipRRect(
                 borderRadius: BorderRadius.circular(AppRadius.pill),
                 child: Container(
                   height: 10,
-                  color: AppColors.surfaceContainerLowest.withValues(alpha: 0.7),
+                  color: AppColors.surfaceContainerLowest.withValues(
+                    alpha: 0.7,
+                  ),
                   child: Align(
                     alignment: Alignment.centerLeft,
                     child: FractionallySizedBox(
@@ -139,31 +154,41 @@ class ProgressDashboardCard extends StatelessWidget {
                 crossAxisAlignment: WrapCrossAlignment.center,
                 children: [
                   StatPill(
-                    label: '$activas ${activas == 1 ? 'Proyecto activo' : 'Proyectos activos'}',
+                    label: 'Activas: $activas',
                     showDot: true,
                     background: AppColors.surfaceContainerLowest,
                     foreground: AppColors.onSurface,
                     bold: false,
-                    padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 5),
+                    padding: const EdgeInsets.symmetric(
+                      horizontal: 10,
+                      vertical: 5,
+                    ),
                   ),
                   StatPill(
-                    label: '$acreditadas ${acreditadas == 1 ? 'Acreditado' : 'Acreditados'}',
+                    label:
+                        '$acreditadas ${acreditadas == 1 ? 'Acreditado' : 'Acreditados'}',
                     icon: Icons.verified,
                     background: AppColors.surfaceContainerLowest,
                     foreground: AppColors.onSurface,
                     bold: false,
-                    padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 5),
+                    padding: const EdgeInsets.symmetric(
+                      horizontal: 10,
+                      vertical: 5,
+                    ),
                   ),
                   StatPill(
                     label: horasFaltantes == 0
                         ? '¡Meta cumplida!'
                         : 'Faltan $horasFaltantes hrs',
-                    background:
-                        AppColors.onSecondaryContainer.withValues(alpha: 0.1),
+                    background: AppColors.onSecondaryContainer.withValues(
+                      alpha: 0.1,
+                    ),
                     foreground: AppColors.onSecondaryContainer,
                     bold: false,
-                    padding:
-                        const EdgeInsets.symmetric(horizontal: 10, vertical: 5),
+                    padding: const EdgeInsets.symmetric(
+                      horizontal: 10,
+                      vertical: 5,
+                    ),
                   ),
                 ],
               ),

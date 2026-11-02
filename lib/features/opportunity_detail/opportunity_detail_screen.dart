@@ -5,6 +5,9 @@ import 'package:provider/provider.dart';
 import 'package:nodara/core/utils/toast.dart';
 import 'package:nodara/core/widgets/app_logo.dart';
 import 'package:nodara/core/widgets/empty_view.dart';
+import 'package:nodara/core/widgets/error_view.dart';
+import 'package:nodara/core/widgets/loading_view.dart';
+import 'package:nodara/features/applications/my_applications_screen.dart';
 import 'package:nodara/data/models/opportunity.dart';
 import 'package:nodara/features/applications/applications_provider.dart';
 import 'package:nodara/features/auth/auth_provider.dart';
@@ -28,6 +31,27 @@ class OpportunityDetailScreen extends StatefulWidget {
 }
 
 class _OpportunityDetailScreenState extends State<OpportunityDetailScreen> {
+  bool _confirming = false;
+
+  void _openApplications() {
+    final applications = context.read<ApplicationsProvider>();
+    var tab = 0;
+    for (final application in applications.applications) {
+      if (application.opportunityId == widget.opportunityId &&
+          !application.estado.esActiva) {
+        tab = application.estado.cuentaHoras ? 1 : 2;
+        break;
+      }
+      if (application.opportunityId == widget.opportunityId) break;
+    }
+    Navigator.of(context).push(
+      MaterialPageRoute<void>(
+        builder: (_) =>
+            MyApplicationsScreen(initialTab: tab, showBackButton: true),
+      ),
+    );
+  }
+
   Future<void> _share(Opportunity opportunity) async {
     await Clipboard.setData(
       ClipboardData(
@@ -55,20 +79,35 @@ class _OpportunityDetailScreenState extends State<OpportunityDetailScreen> {
 
   Future<void> _apply(Opportunity opportunity) async {
     final applications = context.read<ApplicationsProvider>();
-    if (applications.hasApplied(opportunity.id)) {
-      showAppToast(
-        context,
-        'Ya tenés una postulación activa en este programa',
-        icon: Icons.info_outline,
-      );
-      return;
-    }
+    if (_confirming || !applications.canApply(opportunity.id)) return;
+    setState(() => _confirming = true);
+    final confirmed = await showDialog<bool>(
+      context: context,
+      builder: (dialogContext) => AlertDialog(
+        title: const Text('Confirmar postulación'),
+        content: Text('¿Quieres postularte a "${opportunity.titulo}"?'),
+        actions: [
+          TextButton(
+            onPressed: () => Navigator.pop(dialogContext, false),
+            child: const Text('Cancelar'),
+          ),
+          FilledButton(
+            onPressed: () => Navigator.pop(dialogContext, true),
+            style: FilledButton.styleFrom(minimumSize: const Size(48, 48)),
+            child: const Text('Confirmar'),
+          ),
+        ],
+      ),
+    );
+    if (!mounted) return;
+    setState(() => _confirming = false);
+    if (confirmed != true) return;
     final ok = await applications.postular(opportunity);
     if (!mounted) return;
     showAppToast(
       context,
       ok
-          ? '¡Listo! Te avisaremos cuando la organización revise tu postulación 🚀'
+          ? 'Postulación enviada a la organización.'
           : 'No pudimos enviar tu postulación. Intenta de nuevo.',
       icon: ok ? Icons.celebration : Icons.error_outline,
     );
@@ -76,9 +115,24 @@ class _OpportunityDetailScreenState extends State<OpportunityDetailScreen> {
 
   @override
   Widget build(BuildContext context) {
-    final opportunity = context.watch<ExploreProvider>().byId(
-      widget.opportunityId,
-    );
+    final explore = context.watch<ExploreProvider>();
+    if (explore.isLoading) {
+      return Scaffold(appBar: AppBar(), body: const LoadingView());
+    }
+    final error = explore.error;
+    if (error != null) {
+      return Scaffold(
+        appBar: AppBar(),
+        body: ErrorView(
+          message: error,
+          onRetry: () {
+            context.read<ExploreProvider>().retry();
+            setState(() {});
+          },
+        ),
+      );
+    }
+    final opportunity = explore.byId(widget.opportunityId);
     if (opportunity == null) {
       return Scaffold(
         appBar: AppBar(),
@@ -90,9 +144,16 @@ class _OpportunityDetailScreenState extends State<OpportunityDetailScreen> {
     }
 
     final isFavorite = context.watch<AuthProvider>().isFavorite(opportunity.id);
-    final hasApplied = context.watch<ApplicationsProvider>().hasApplied(
-      opportunity.id,
-    );
+    final applications = context.watch<ApplicationsProvider>();
+    final hasApplied = applications.hasApplied(opportunity.id);
+    VoidCallback? onApply;
+    if (!_confirming) {
+      if (hasApplied) {
+        onApply = _openApplications;
+      } else if (applications.canApply(opportunity.id)) {
+        onApply = () => _apply(opportunity);
+      }
+    }
 
     return Scaffold(
       appBar: AppBar(
@@ -106,20 +167,11 @@ class _OpportunityDetailScreenState extends State<OpportunityDetailScreen> {
           children: [
             const AppLogo(markSize: 32, showWordmark: false),
             const SizedBox(width: AppSpacing.sm),
-            Text('Detalle De Causa', style: AppTextStyles.titleMd),
+            Expanded(
+              child: Text('Detalle De Causa', style: AppTextStyles.titleMd),
+            ),
           ],
         ),
-        actions: [
-          IconButton(
-            tooltip: 'Más opciones',
-            icon: const Icon(Icons.more_vert),
-            onPressed: () => showAppToast(
-              context,
-              'Más opciones próximamente',
-              icon: Icons.more_horiz,
-            ),
-          ),
-        ],
       ),
       body: ListView(
         padding: EdgeInsets.zero,
@@ -154,11 +206,21 @@ class _OpportunityDetailScreenState extends State<OpportunityDetailScreen> {
           ),
         ],
       ),
-      bottomNavigationBar: ApplyBar(
-        hours: opportunity.horasEstimadas,
-        hasApplied: hasApplied,
-        onApply: () => _apply(opportunity),
-      ),
+      bottomNavigationBar: applications.error != null
+          ? SafeArea(
+              child: ErrorView(
+                message: applications.error ?? '',
+                onRetry: () => context.read<ApplicationsProvider>().retry(),
+              ),
+            )
+          : ApplyBar(
+              hours: opportunity.horasEstimadas,
+              hasApplied: hasApplied,
+              isBusy:
+                  applications.isLoading ||
+                  applications.isSubmitting(opportunity.id),
+              onApply: onApply,
+            ),
     );
   }
 }
