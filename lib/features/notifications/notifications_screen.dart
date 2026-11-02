@@ -10,10 +10,7 @@ import 'package:nodara/features/notifications/notifications_provider.dart';
 import 'package:nodara/theme/app_colors.dart';
 import 'package:nodara/theme/app_theme.dart';
 
-/// Lista de avisos (reemplaza al tab "Mensajes", que no estaba en la ficha).
-///
-/// F4 (Josué): notificación local cuando llega un aviso nuevo y abrir
-/// Postulaciones al tocarla.
+/// Avisos privados del usuario y su estado de lectura.
 class NotificationsScreen extends StatelessWidget {
   const NotificationsScreen({super.key});
 
@@ -26,23 +23,37 @@ class NotificationsScreen extends StatelessWidget {
     if (provider.isLoading) {
       body = const LoadingView();
     } else if (errorMessage != null) {
-      body = ErrorView(message: errorMessage);
+      body = ErrorView(
+        message: errorMessage,
+        onRetry: () => context.read<NotificationsProvider>().retry(),
+      );
     } else if (provider.items.isEmpty) {
       body = const EmptyView(
         icon: Icons.notifications_none,
-        message: 'Aquí verás cuando una organización responda a tus postulaciones.',
+        message:
+            'Aquí verás cuando una organización responda a tus postulaciones.',
       );
     } else {
-      body = ListView.separated(
+      body = ListView.builder(
         padding: const EdgeInsets.symmetric(horizontal: AppSpacing.md),
         itemCount: provider.items.length,
-        separatorBuilder: (_, _) => const SizedBox(height: AppSpacing.sm),
         itemBuilder: (context, index) {
           final notification = provider.items[index];
           return _NotificationTile(
             notification: notification,
-            onTap: () =>
-                context.read<NotificationsProvider>().markAsRead(notification),
+            onTap: () async {
+              final success = await context
+                  .read<NotificationsProvider>()
+                  .markAsRead(notification);
+              if (context.mounted == false) return;
+              if (success == false) {
+                ScaffoldMessenger.of(context).showSnackBar(
+                  const SnackBar(
+                    content: Text('No se pudo marcar como leído. Reintenta.'),
+                  ),
+                );
+              }
+            },
           );
         },
       );
@@ -57,6 +68,11 @@ class NotificationsScreen extends StatelessWidget {
               padding: const EdgeInsets.all(AppSpacing.md),
               child: Text('Avisos', style: AppTextStyles.headlineSm),
             ),
+            if (provider.localError case final String message)
+              Padding(
+                padding: const EdgeInsets.all(AppSpacing.md),
+                child: Text(message),
+              ),
             Expanded(child: body),
           ],
         ),
@@ -101,14 +117,16 @@ class _NotificationTile extends StatelessWidget {
                     const SizedBox(height: 2),
                     Text(
                       notification.cuerpo,
-                      style: AppTextStyles.bodySm
-                          .copyWith(color: AppColors.onSurfaceVariant),
+                      style: AppTextStyles.bodySm.copyWith(
+                        color: AppColors.onSurfaceVariant,
+                      ),
                     ),
                     const SizedBox(height: 4),
                     Text(
                       fechaCorta(notification.creadaEn),
-                      style: AppTextStyles.labelSm
-                          .copyWith(color: AppColors.outline),
+                      style: AppTextStyles.labelSm.copyWith(
+                        color: AppColors.outline,
+                      ),
                     ),
                   ],
                 ),
