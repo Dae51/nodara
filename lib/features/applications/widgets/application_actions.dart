@@ -1,14 +1,13 @@
 import 'package:flutter/material.dart';
 
-import 'package:nodara/core/utils/toast.dart';
+import 'package:provider/provider.dart';
+import 'package:nodara/features/applications/applications_provider.dart';
+import 'package:nodara/features/opportunity_detail/opportunity_detail_screen.dart';
 import 'package:nodara/data/models/application.dart';
 import 'package:nodara/theme/app_colors.dart';
 import 'package:nodara/theme/app_theme.dart';
 
-/// Botones de la tarjeta según el estado de la postulación.
-///
-/// Los toasts marcados con TODO son acciones que aún no existen: en F2/F3
-/// se implementan o se quitan (regla: nada de botones falsos en la demo).
+/// Acciones disponibles según las transiciones del modelo.
 class ApplicationActions extends StatelessWidget {
   const ApplicationActions({
     super.key,
@@ -21,117 +20,43 @@ class ApplicationActions extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    switch (application.estado) {
-      case EstadoPostulacion.aceptado:
-      case EstadoPostulacion.confirmado:
-      case EstadoPostulacion.enCurso:
-        return Column(
-          children: [
-            Row(
-              children: [
-                Expanded(
-                  child: _LightButton(
-                    icon: Icons.badge,
-                    label: 'Ver asistencia y QR',
-                    // TODO(F3): implementar o quitar.
-                    onTap: () => showAppToast(
-                      context,
-                      'Mostrando tu código QR de asistencia',
-                      icon: Icons.qr_code,
-                    ),
-                  ),
-                ),
-                const SizedBox(width: AppSpacing.sm),
-                _SquareButton(
-                  icon: Icons.chat,
-                  tooltip: 'Contactar coordinador',
-                  // TODO(F3): implementar o quitar.
-                  onTap: () => showAppToast(
-                    context,
-                    'Abriendo chat con el coordinador',
-                    icon: Icons.chat,
-                  ),
-                ),
-              ],
-            ),
-            const SizedBox(height: AppSpacing.sm),
-            _WithdrawButton(onTap: onWithdraw),
-          ],
-        );
-      case EstadoPostulacion.pendiente:
-      case EstadoPostulacion.enRevision:
-      case EstadoPostulacion.entrevista:
-      case EstadoPostulacion.listaEspera:
-        return Column(
-          children: [
-            _LightButton(
-              icon: Icons.info_outline,
-              label: 'Ver estado de solicitud',
-              wide: true,
-              onTap: () => showAppToast(
-                context,
-                'Tu solicitud está en revisión por la organización',
-                icon: Icons.pending_actions,
-              ),
-            ),
-            const SizedBox(height: AppSpacing.sm),
-            _WithdrawButton(onTap: onWithdraw),
-          ],
-        );
-      case EstadoPostulacion.completado:
-        return Row(
-          children: [
-            Expanded(
-              child: _PrimaryButton(
-                icon: Icons.download,
-                label: 'Descargar constancia oficial',
-                // TODO(F5): generar el PDF desde Perfil.
-                onTap: () => showAppToast(
-                  context,
-                  'La constancia se descarga desde tu Perfil',
-                  icon: Icons.download_done,
-                ),
-              ),
-            ),
-            const SizedBox(width: AppSpacing.sm),
-            _SquareButton(
-              icon: Icons.share,
-              tooltip: 'Compartir logro',
-              // TODO(F2): implementar o quitar.
-              onTap: () =>
-                  showAppToast(context, 'Logro compartido', icon: Icons.share),
-            ),
-          ],
-        );
-      case EstadoPostulacion.rechazado:
-      case EstadoPostulacion.retirado:
-      case EstadoPostulacion.noShow:
-      case EstadoPostulacion.cancelado:
-        return _LightButton(
+    final provider = context.watch<ApplicationsProvider>();
+    return Column(
+      children: [
+        _LightButton(
           icon: Icons.visibility_outlined,
           label: 'Ver detalle',
           wide: true,
-          // TODO(F3): abrir el detalle de la oportunidad.
-          onTap: () => showAppToast(
-            context,
-            'Abriendo detalle del voluntariado',
-            icon: Icons.visibility,
+          onTap: () => Navigator.of(context).push(
+            MaterialPageRoute<void>(
+              builder: (_) => OpportunityDetailScreen(
+                opportunityId: application.opportunityId,
+              ),
+            ),
           ),
-        );
-    }
+        ),
+        if (application.estado.siguientes.contains(
+          EstadoPostulacion.retirado,
+        )) ...[
+          const SizedBox(height: AppSpacing.sm),
+          _WithdrawButton(
+            onTap: provider.isWithdrawing(application.id) ? null : onWithdraw,
+          ),
+        ],
+      ],
+    );
   }
 }
 
 class _WithdrawButton extends StatelessWidget {
   const _WithdrawButton({required this.onTap});
 
-  final VoidCallback onTap;
+  final VoidCallback? onTap;
 
   @override
   Widget build(BuildContext context) {
     return SizedBox(
       width: double.infinity,
-      height: 48,
       child: OutlinedButton.icon(
         onPressed: onTap,
         style: OutlinedButton.styleFrom(
@@ -184,10 +109,9 @@ class _LightButton extends StatelessWidget {
               Flexible(
                 child: Text(
                   label,
-                  maxLines: 1,
-                  overflow: TextOverflow.ellipsis,
-                  style:
-                      AppTextStyles.labelMd.copyWith(color: AppColors.primary),
+                  style: AppTextStyles.labelMd.copyWith(
+                    color: AppColors.primary,
+                  ),
                 ),
               ),
             ],
@@ -196,79 +120,5 @@ class _LightButton extends StatelessWidget {
       ),
     );
     return wide ? SizedBox(width: double.infinity, child: button) : button;
-  }
-}
-
-class _PrimaryButton extends StatelessWidget {
-  const _PrimaryButton({
-    required this.icon,
-    required this.label,
-    required this.onTap,
-  });
-
-  final IconData icon;
-  final String label;
-  final VoidCallback onTap;
-
-  @override
-  Widget build(BuildContext context) {
-    return FilledButton(
-      onPressed: onTap,
-      style: FilledButton.styleFrom(
-        backgroundColor: AppColors.primary,
-        minimumSize: const Size(0, 48),
-        padding: const EdgeInsets.symmetric(horizontal: 12),
-        shape: RoundedRectangleBorder(
-          borderRadius: BorderRadius.circular(AppRadius.sm),
-        ),
-      ),
-      child: Row(
-        mainAxisAlignment: MainAxisAlignment.center,
-        children: [
-          Icon(icon, size: 18, color: Colors.white),
-          const SizedBox(width: 6),
-          Flexible(
-            child: Text(
-              label,
-              maxLines: 1,
-              overflow: TextOverflow.ellipsis,
-              style: AppTextStyles.labelMd.copyWith(color: Colors.white),
-            ),
-          ),
-        ],
-      ),
-    );
-  }
-}
-
-class _SquareButton extends StatelessWidget {
-  const _SquareButton({
-    required this.icon,
-    required this.tooltip,
-    required this.onTap,
-  });
-
-  final IconData icon;
-  final String tooltip;
-  final VoidCallback onTap;
-
-  @override
-  Widget build(BuildContext context) {
-    return Tooltip(
-      message: tooltip,
-      child: Material(
-        color: AppColors.surfaceContainerLow,
-        borderRadius: BorderRadius.circular(AppRadius.sm),
-        child: InkWell(
-          onTap: onTap,
-          borderRadius: BorderRadius.circular(AppRadius.sm),
-          child: SizedBox(
-            width: 48,
-            height: 48,
-            child: Icon(icon, size: 18, color: AppColors.primary),
-          ),
-        ),
-      ),
-    );
   }
 }

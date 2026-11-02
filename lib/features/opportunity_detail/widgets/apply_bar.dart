@@ -10,11 +10,13 @@ class ApplyBar extends StatelessWidget {
     required this.hours,
     required this.hasApplied,
     required this.onApply,
+    this.isBusy = false,
   });
 
   final int hours;
   final bool hasApplied;
-  final VoidCallback onApply;
+  final VoidCallback? onApply;
+  final bool isBusy;
 
   @override
   Widget build(BuildContext context) {
@@ -66,7 +68,7 @@ class ApplyBar extends StatelessWidget {
               const SizedBox(width: AppSpacing.md),
               Expanded(
                 child: FilledButton(
-                  onPressed: onApply,
+                  onPressed: isBusy ? null : onApply,
                   style: FilledButton.styleFrom(
                     backgroundColor: hasApplied
                         ? AppColors.tertiary
@@ -86,36 +88,18 @@ class ApplyBar extends StatelessWidget {
                       const SizedBox(width: AppSpacing.xs),
                       Flexible(
                         child: Text(
-                          hasApplied
-                              ? '¡Ya estás postulado!'
+                          isBusy
+                              ? 'Cargando…'
+                              : hasApplied
+                              ? 'Ver mi postulación'
                               : 'Postularme ahora',
                           style: AppTextStyles.labelLg.copyWith(
                             color: Colors.white,
                             fontWeight: FontWeight.w700,
                           ),
-                          maxLines: 1,
-                          overflow: TextOverflow.ellipsis,
+                          textAlign: TextAlign.center,
                         ),
                       ),
-                      if (!hasApplied) ...[
-                        const SizedBox(width: AppSpacing.xs),
-                        Container(
-                          padding: const EdgeInsets.symmetric(
-                            horizontal: 6,
-                            vertical: 2,
-                          ),
-                          decoration: BoxDecoration(
-                            color: Colors.white.withValues(alpha: 0.2),
-                            borderRadius: BorderRadius.circular(AppRadius.xs),
-                          ),
-                          child: Text(
-                            '1 paso',
-                            style: AppTextStyles.labelSm.copyWith(
-                              color: Colors.white,
-                            ),
-                          ),
-                        ),
-                      ],
                     ],
                   ),
                 ),

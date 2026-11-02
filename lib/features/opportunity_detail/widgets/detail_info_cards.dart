@@ -50,8 +50,6 @@ class DetailTitleCard extends StatelessWidget {
                         Flexible(
                           child: Text(
                             opportunity.orgNombre,
-                            maxLines: 1,
-                            overflow: TextOverflow.ellipsis,
                             style: AppTextStyles.titleSm,
                           ),
                         ),
@@ -66,7 +64,10 @@ class DetailTitleCard extends StatelessWidget {
                       ],
                     ),
                     const SizedBox(height: 4),
-                    Row(
+                    Wrap(
+                      spacing: 6,
+                      runSpacing: 4,
+                      crossAxisAlignment: WrapCrossAlignment.center,
                       children: [
                         Container(
                           padding: const EdgeInsets.symmetric(
@@ -84,7 +85,6 @@ class DetailTitleCard extends StatelessWidget {
                             ),
                           ),
                         ),
-                        const SizedBox(width: 6),
                         if (opportunity.calificacion case final rating?)
                           Text(
                             '• $rating ★ (${opportunity.resenas} reseñas)',
@@ -127,9 +127,11 @@ class DetailSpecSheet extends StatelessWidget {
                       color: AppColors.primary,
                     ),
                     const SizedBox(width: 6),
-                    Text(
-                      'Detalles de la Convocatoria',
-                      style: AppTextStyles.titleSm,
+                    Expanded(
+                      child: Text(
+                        'Detalles de la Convocatoria',
+                        style: AppTextStyles.titleSm,
+                      ),
                     ),
                   ],
                 ),
@@ -258,7 +260,10 @@ class _SpotsBlock extends StatelessWidget {
       ),
       child: Column(
         children: [
-          Row(
+          Wrap(
+            spacing: 4,
+            runSpacing: 4,
+            crossAxisAlignment: WrapCrossAlignment.center,
             children: [
               const Icon(Icons.group, size: 16, color: AppColors.tertiary),
               const SizedBox(width: 4),
@@ -268,7 +273,6 @@ class _SpotsBlock extends StatelessWidget {
                   color: AppColors.onSurfaceVariant,
                 ),
               ),
-              const Spacer(),
               Text(
                 '${opportunity.cuposLibres} de ${opportunity.cuposTotal} lugares libres',
                 style: AppTextStyles.labelMd.copyWith(
@@ -285,10 +289,12 @@ class _SpotsBlock extends StatelessWidget {
             children: [
               AvatarStack(images: opportunity.avataresInscritos, size: 24),
               const SizedBox(width: AppSpacing.sm),
-              Text(
-                'Ya se sumaron ${opportunity.cuposOcupados} compañeros',
-                style: AppTextStyles.bodySm.copyWith(
-                  color: AppColors.onSurfaceVariant,
+              Expanded(
+                child: Text(
+                  'Ya se sumaron ${opportunity.cuposOcupados} compañeros',
+                  style: AppTextStyles.bodySm.copyWith(
+                    color: AppColors.onSurfaceVariant,
+                  ),
                 ),
               ),
             ],

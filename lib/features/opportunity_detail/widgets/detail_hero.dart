@@ -56,6 +56,7 @@ class DetailHero extends StatelessWidget {
           ),
           Positioned(
             left: 16,
+            right: 16,
             bottom: 16,
             child: Container(
               padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 6),
@@ -72,10 +73,12 @@ class DetailHero extends StatelessWidget {
                     color: AppColors.onSecondaryFixed,
                   ),
                   const SizedBox(width: 4),
-                  Text(
-                    'Convocatoria Abierta · Cupos Limitados',
-                    style: AppTextStyles.labelMd.copyWith(
-                      color: AppColors.onSecondaryFixed,
+                  Flexible(
+                    child: Text(
+                      'Convocatoria Abierta · Cupos Limitados',
+                      style: AppTextStyles.labelMd.copyWith(
+                        color: AppColors.onSecondaryFixed,
+                      ),
                     ),
                   ),
                 ],
@@ -103,8 +106,8 @@ class _CircleAction extends StatelessWidget {
         customBorder: const CircleBorder(),
         onTap: onTap,
         child: SizedBox(
-          width: 40,
-          height: 40,
+          width: 48,
+          height: 48,
           child: Icon(icon, size: 20, color: AppColors.onSurface),
         ),
       ),

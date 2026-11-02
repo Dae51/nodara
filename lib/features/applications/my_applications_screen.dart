@@ -17,26 +17,39 @@ import 'package:nodara/theme/app_colors.dart';
 import 'package:nodara/theme/app_theme.dart';
 
 class MyApplicationsScreen extends StatefulWidget {
-  const MyApplicationsScreen({super.key, this.onOpenNotifications});
+  const MyApplicationsScreen({
+    super.key,
+    this.onOpenNotifications,
+    this.initialTab = 0,
+    this.showBackButton = false,
+  }) : assert(initialTab >= 0 && initialTab <= 2);
 
   final VoidCallback? onOpenNotifications;
+  final int initialTab;
+  final bool showBackButton;
 
   @override
   State<MyApplicationsScreen> createState() => _MyApplicationsScreenState();
 }
 
 class _MyApplicationsScreenState extends State<MyApplicationsScreen> {
-  int _tab = 0;
+  late int _tab = widget.initialTab;
+  bool _confirmingWithdrawal = false;
 
   Future<void> _withdraw(Application application) async {
     final provider = context.read<ApplicationsProvider>();
+    if (_confirmingWithdrawal ||
+        provider.isWithdrawing(application.id) ||
+        !application.estado.siguientes.contains(EstadoPostulacion.retirado)) {
+      return;
+    }
+    setState(() => _confirmingWithdrawal = true);
     final confirmed = await showDialog<bool>(
       context: context,
       builder: (dialogContext) => AlertDialog(
         title: const Text('Retirarme de la convocatoria'),
         content: Text(
-          '¿Seguro que quieres retirarte de "${application.oportunidadTitulo}"? '
-          'La organización liberará tu cupo.',
+          '¿Seguro que quieres retirarte de "${application.oportunidadTitulo}"?',
         ),
         actions: [
           TextButton(
@@ -45,18 +58,26 @@ class _MyApplicationsScreenState extends State<MyApplicationsScreen> {
           ),
           FilledButton(
             onPressed: () => Navigator.pop(dialogContext, true),
-            style: FilledButton.styleFrom(backgroundColor: AppColors.error),
+            style: FilledButton.styleFrom(
+              backgroundColor: AppColors.error,
+              minimumSize: const Size(48, 48),
+            ),
             child: const Text('Sí, retirarme'),
           ),
         ],
       ),
     );
+    if (!mounted) return;
+    setState(() => _confirmingWithdrawal = false);
     if (confirmed != true) return;
     final ok = await provider.retirar(application);
     if (!mounted) return;
+    if (ok) setState(() => _tab = 2);
     showAppToast(
       context,
-      ok ? 'Te retiraste de la convocatoria' : 'No pudimos procesar tu solicitud',
+      ok
+          ? 'Te retiraste de la convocatoria'
+          : 'No pudimos procesar tu solicitud',
       icon: ok ? Icons.cancel_outlined : Icons.error_outline,
     );
   }
@@ -76,6 +97,9 @@ class _MyApplicationsScreenState extends State<MyApplicationsScreen> {
     };
 
     return Scaffold(
+      appBar: widget.showBackButton
+          ? AppBar(title: const Text('Mis postulaciones'))
+          : null,
       body: SafeArea(
         bottom: false,
         child: CustomScrollView(
@@ -83,31 +107,19 @@ class _MyApplicationsScreenState extends State<MyApplicationsScreen> {
             SliverToBoxAdapter(
               child: ApplicationsHeader(
                 avatarUrl: user?.avatarUrl ?? '',
-                onNotifications: () => widget.onOpenNotifications?.call(),
+                onNotifications: widget.onOpenNotifications,
               ),
             ),
             SliverToBoxAdapter(
-              child: ApplicationsSubHeader(
-                count: activas.length,
-                // TODO(F3): implementar o quitar.
-                onFilter: () => showAppToast(
-                  context,
-                  'Filtros de postulaciones próximamente',
-                  icon: Icons.tune,
-                ),
-                onHelp: () => showAppToast(
-                  context,
-                  'Guía de acreditación de horas',
-                  icon: Icons.help_outline,
-                ),
-              ),
+              child: ApplicationsSubHeader(count: activas.length),
             ),
             const SliverToBoxAdapter(child: SizedBox(height: AppSpacing.md)),
             if (user != null && user.tieneMetaDeHoras)
               SliverToBoxAdapter(
                 child: Padding(
-                  padding:
-                      const EdgeInsets.symmetric(horizontal: AppSpacing.md),
+                  padding: const EdgeInsets.symmetric(
+                    horizontal: AppSpacing.md,
+                  ),
                   child: ProgressDashboardCard(
                     horasCompletadas: provider.horasCompletadas,
                     horasRequeridas: provider.horasRequeridas,
@@ -141,7 +153,7 @@ class _MyApplicationsScreenState extends State<MyApplicationsScreen> {
               error: provider.error,
               applications: visible,
               emptyMessage: _tab == 2
-                  ? 'Todavía no tenés postulaciones en tu historial.'
+                  ? 'Todavía no tenés postulaciones cerradas.'
                   : 'No hay postulaciones en esta sección.',
               onRetry: provider.retry,
               onWithdraw: _withdraw,

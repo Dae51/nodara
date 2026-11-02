@@ -32,10 +32,11 @@ class ApplicationCard extends StatelessWidget {
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          Row(
+          Wrap(
+            spacing: AppSpacing.sm,
+            runSpacing: AppSpacing.sm,
             children: [
-              Expanded(child: _StatusBadge(estado: application.estado)),
-              const SizedBox(width: AppSpacing.sm),
+              _StatusBadge(estado: application.estado),
               _RewardPill(application: application),
             ],
           ),
@@ -57,8 +58,6 @@ class ApplicationCard extends StatelessWidget {
                   children: [
                     Text(
                       application.oportunidadTitulo,
-                      maxLines: 1,
-                      overflow: TextOverflow.ellipsis,
                       style: AppTextStyles.titleMd,
                     ),
                     const SizedBox(height: 2),
@@ -78,10 +77,9 @@ class ApplicationCard extends StatelessWidget {
                         Flexible(
                           child: Text(
                             application.orgNombre,
-                            maxLines: 1,
-                            overflow: TextOverflow.ellipsis,
-                            style: AppTextStyles.bodySm
-                                .copyWith(color: AppColors.onSurfaceVariant),
+                            style: AppTextStyles.bodySm.copyWith(
+                              color: AppColors.onSurfaceVariant,
+                            ),
                           ),
                         ),
                       ],
@@ -94,10 +92,7 @@ class ApplicationCard extends StatelessWidget {
           const SizedBox(height: AppSpacing.sm),
           _InfoBox(application: application),
           const SizedBox(height: AppSpacing.sm),
-          ApplicationActions(
-            application: application,
-            onWithdraw: onWithdraw,
-          ),
+          ApplicationActions(application: application, onWithdraw: onWithdraw),
         ],
       ),
     );
@@ -114,35 +109,35 @@ class _StatusBadge extends StatelessWidget {
     // El estado se comunica con ícono + texto, no solo con color.
     final (icon, bg, fg) = switch (estado) {
       EstadoPostulacion.aceptado => (
-          Icons.autorenew,
-          AppColors.secondaryContainer,
-          AppColors.onSecondaryContainer,
-        ),
+        Icons.autorenew,
+        AppColors.secondaryContainer,
+        AppColors.onSecondaryContainer,
+      ),
       EstadoPostulacion.pendiente => (
-          Icons.hourglass_top,
-          AppColors.surfaceContainerHigh,
-          AppColors.onSurfaceVariant,
-        ),
+        Icons.hourglass_top,
+        AppColors.surfaceContainerHigh,
+        AppColors.onSurfaceVariant,
+      ),
       EstadoPostulacion.completado => (
-          Icons.check_circle,
-          AppColors.primary.withValues(alpha: 0.1),
-          AppColors.primary,
-        ),
+        Icons.check_circle,
+        AppColors.primary.withValues(alpha: 0.1),
+        AppColors.primary,
+      ),
       EstadoPostulacion.rechazado => (
-          Icons.cancel,
-          AppColors.error.withValues(alpha: 0.1),
-          AppColors.error,
-        ),
+        Icons.cancel,
+        AppColors.error.withValues(alpha: 0.1),
+        AppColors.error,
+      ),
       EstadoPostulacion.retirado => (
-          Icons.history,
-          AppColors.surfaceContainerHigh,
-          AppColors.onSurfaceVariant,
-        ),
+        Icons.history,
+        AppColors.surfaceContainerHigh,
+        AppColors.onSurfaceVariant,
+      ),
       _ => (
-          Icons.pending_actions,
-          AppColors.surfaceContainerHigh,
-          AppColors.onSurfaceVariant,
-        ),
+        Icons.pending_actions,
+        AppColors.surfaceContainerHigh,
+        AppColors.onSurfaceVariant,
+      ),
     };
 
     return Container(
@@ -159,10 +154,10 @@ class _StatusBadge extends StatelessWidget {
           Flexible(
             child: Text(
               estado.label,
-              maxLines: 1,
-              overflow: TextOverflow.ellipsis,
-              style: AppTextStyles.labelSm
-                  .copyWith(color: fg, fontWeight: FontWeight.w700),
+              style: AppTextStyles.labelSm.copyWith(
+                color: fg,
+                fontWeight: FontWeight.w700,
+              ),
             ),
           ),
         ],
@@ -193,13 +188,13 @@ class _RewardPill extends StatelessWidget {
       background: completed
           ? AppColors.secondaryContainer
           : pending
-              ? AppColors.surfaceContainer
-              : AppColors.primaryFixed,
+          ? AppColors.surfaceContainer
+          : AppColors.primaryFixed,
       foreground: completed
           ? AppColors.onSecondaryContainer
           : pending
-              ? AppColors.onSurfaceVariant
-              : AppColors.primary,
+          ? AppColors.onSurfaceVariant
+          : AppColors.primary,
       bold: !pending,
       padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 3),
     );
@@ -216,37 +211,37 @@ class _InfoBox extends StatelessWidget {
   Widget build(BuildContext context) {
     final (icon, title, subtitle) = switch (application.estado) {
       EstadoPostulacion.pendiente => (
-          Icons.hourglass_top,
-          'Postulación enviada',
-          'En revisión por el equipo coordinador',
-        ),
+        Icons.hourglass_top,
+        'Postulación enviada',
+        'En revisión por el equipo coordinador',
+      ),
       EstadoPostulacion.aceptado => (
-          Icons.calendar_month,
-          'Próxima sesión obligatoria',
-          application.horario.isEmpty
-              ? 'La organización te contactará'
-              : application.horario,
-        ),
+        Icons.calendar_month,
+        'Próxima sesión obligatoria',
+        application.horario.isEmpty
+            ? 'La organización te contactará'
+            : application.horario,
+      ),
       EstadoPostulacion.completado => (
-          Icons.verified,
-          'Horas acreditadas',
-          '${application.horasQueCuentan} hrs validadas por ${application.orgNombre}',
-        ),
+        Icons.verified,
+        'Horas acreditadas',
+        '${application.horasQueCuentan} hrs validadas por ${application.orgNombre}',
+      ),
       EstadoPostulacion.rechazado => (
-          Icons.info_outline,
-          'Postulación no aceptada',
-          application.motivo ?? 'Cupos completos o perfil no compatible',
-        ),
+        Icons.info_outline,
+        'Postulación no aceptada',
+        application.motivo ?? 'La organización no indicó un motivo',
+      ),
       EstadoPostulacion.retirado => (
-          Icons.undo,
-          'Te retiraste de esta convocatoria',
-          'Puedes volver a postularte si sigue vigente',
-        ),
+        Icons.undo,
+        'Te retiraste de esta convocatoria',
+        application.motivo ?? 'Puedes volver a postularte si sigue vigente',
+      ),
       _ => (
-          Icons.pending_actions,
-          application.estado.label,
-          application.motivo ?? 'La organización está actualizando tu solicitud',
-        ),
+        Icons.pending_actions,
+        application.estado.label,
+        application.motivo ?? 'La organización está actualizando tu solicitud',
+      ),
     };
     final completed = application.estado == EstadoPostulacion.completado;
 
@@ -272,15 +267,15 @@ class _InfoBox extends StatelessWidget {
               children: [
                 Text(
                   title,
-                  style:
-                      AppTextStyles.labelSm.copyWith(color: AppColors.onSurface),
+                  style: AppTextStyles.labelSm.copyWith(
+                    color: AppColors.onSurface,
+                  ),
                 ),
                 Text(
                   subtitle,
-                  maxLines: 1,
-                  overflow: TextOverflow.ellipsis,
-                  style: AppTextStyles.bodySm
-                      .copyWith(color: AppColors.onSurfaceVariant),
+                  style: AppTextStyles.bodySm.copyWith(
+                    color: AppColors.onSurfaceVariant,
+                  ),
                 ),
               ],
             ),

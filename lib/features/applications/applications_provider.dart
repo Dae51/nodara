@@ -12,8 +12,9 @@ import 'package:nodara/data/repositories/auth_repository.dart';
 /// (horas, progreso, nivel). Nada de esto se guarda: son getters.
 class ApplicationsProvider extends ChangeNotifier {
   ApplicationsProvider(this._repository, AuthRepository authRepository) {
-    _authSubscription =
-        authRepository.authStateChanges().listen(_onUserChanged);
+    _authSubscription = authRepository.authStateChanges().listen(
+      _onUserChanged,
+    );
   }
 
   final ApplicationRepository _repository;
@@ -24,6 +25,21 @@ class ApplicationsProvider extends ChangeNotifier {
   List<Application> _applications = const [];
   bool _isLoading = true;
   String? _error;
+  final Set<String> _postulando = {};
+  final Set<String> _retirando = {};
+  bool _disposed = false;
+
+  bool isSubmitting(String opportunityId) =>
+      _postulando.contains(opportunityId);
+  bool isWithdrawing(String applicationId) =>
+      _retirando.contains(applicationId);
+
+  bool canApply(String opportunityId) =>
+      _user != null &&
+      !_isLoading &&
+      _error == null &&
+      !hasApplied(opportunityId) &&
+      !isSubmitting(opportunityId);
 
   bool get isLoading => _isLoading;
   String? get error => _error;
@@ -32,9 +48,8 @@ class ApplicationsProvider extends ChangeNotifier {
   List<Application> get activas =>
       _applications.where((a) => a.estado.esActiva).toList();
 
-  List<Application> get completadas => _applications
-      .where((a) => a.estado == EstadoPostulacion.completado)
-      .toList();
+  List<Application> get completadas =>
+      _applications.where((a) => a.estado.cuentaHoras).toList();
 
   /// Rechazadas o retiradas.
   List<Application> get cerradas =>
@@ -63,29 +78,52 @@ class ApplicationsProvider extends ChangeNotifier {
 
   /// Hay una postulación vigente (no retirada) a esa oportunidad.
   bool hasApplied(String opportunityId) => _applications.any(
-        (a) =>
-            a.opportunityId == opportunityId &&
-            a.estado != EstadoPostulacion.retirado,
-      );
+    (a) =>
+        a.opportunityId == opportunityId &&
+        a.estado != EstadoPostulacion.retirado,
+  );
 
   // ---- Acciones ----
 
   Future<bool> postular(Opportunity opportunity) async {
     final user = _user;
-    if (user == null || hasApplied(opportunity.id)) return false;
+    if (user == null || !canApply(opportunity.id)) return false;
+    _postulando.add(opportunity.id);
+    notifyListeners();
     try {
       await _repository.postular(opportunity: opportunity, user: user);
       return true;
     } catch (_) {
+      if (!_disposed && _user?.uid == user.uid) {
+        _postulando.remove(opportunity.id);
+        notifyListeners();
+      }
       return false;
     }
   }
 
   Future<bool> retirar(Application application) async {
+    final current = _applications
+        .where((a) => a.id == application.id)
+        .firstOrNull;
+    if (current == null ||
+        _user?.uid != current.userId ||
+        _isLoading ||
+        _error != null ||
+        !current.estado.siguientes.contains(EstadoPostulacion.retirado) ||
+        isWithdrawing(application.id)) {
+      return false;
+    }
+    _retirando.add(application.id);
+    notifyListeners();
     try {
       await _repository.retirar(application);
       return true;
     } catch (_) {
+      if (!_disposed && _user?.uid == application.userId) {
+        _retirando.remove(application.id);
+        notifyListeners();
+      }
       return false;
     }
   }
@@ -99,6 +137,8 @@ class ApplicationsProvider extends ChangeNotifier {
       notifyListeners(); // solo cambió el perfil (ej. horasRequeridas)
       return;
     }
+    _postulando.clear();
+    _retirando.clear();
     _subscribeFor(user);
   }
 
@@ -114,23 +154,33 @@ class ApplicationsProvider extends ChangeNotifier {
     }
     _isLoading = true;
     notifyListeners();
-    _subscription = _repository.watchMine(user.uid).listen(
-      (items) {
-        _applications = items;
-        _isLoading = false;
-        _error = null;
-        notifyListeners();
-      },
-      onError: (Object _) {
-        _isLoading = false;
-        _error = 'No pudimos cargar tus postulaciones.';
-        notifyListeners();
-      },
-    );
+    _subscription = _repository
+        .watchMine(user.uid)
+        .listen(
+          (items) {
+            _applications = items;
+            // El bloqueo continúa hasta que el stream refleja la escritura.
+            _postulando.removeWhere(hasApplied);
+            _retirando.removeWhere(
+              (id) => items.any(
+                (a) => a.id == id && a.estado == EstadoPostulacion.retirado,
+              ),
+            );
+            _isLoading = false;
+            _error = null;
+            notifyListeners();
+          },
+          onError: (Object _) {
+            _isLoading = false;
+            _error = 'No pudimos cargar tus postulaciones.';
+            notifyListeners();
+          },
+        );
   }
 
   @override
   void dispose() {
+    _disposed = true;
     _authSubscription?.cancel();
     _subscription?.cancel();
     super.dispose();
