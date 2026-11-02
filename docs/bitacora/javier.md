@@ -8,6 +8,8 @@ Base revisada: `origin/master` en `61eccf6dd2a0aeb28116933dd4ee5ff9467fc27d`. Ya
 
 Rama: `feat/javier-postularse`, creada desde `origin/master` porque no existía local ni remotamente; merge de master sin cambios pendientes. Identidad Git configurada solo en este repositorio con los datos indicados por Javier; cuenta autenticada comprobada: `JarcoVixO`.
 
+Entrega: [commit de implementación f0b6416](https://github.com/Dae51/nodara/commit/f0b641663bdf327eb6a1b45ba6f9753279891479) · [PR #4 en borrador](https://github.com/Dae51/nodara/pull/4), hacia `master`. Rama subida con `JarcoVixO`, sin merge.
+
 Cambios propios de esta entrega:
 
 - `opportunity_detail_screen.dart` y `apply_bar.dart`: carga/error/reintento/inexistente, confirmación antes de guardar, acción deshabilitada y navegación real «Ver mi postulación» a la pestaña correspondiente, con regreso.
