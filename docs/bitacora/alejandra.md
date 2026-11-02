@@ -47,4 +47,5 @@ Referencia consultada para la API 22 de alertas y permisos: https://pub.dev/pack
 
 Captura: alejandra-postulantes.png, obtenida de un test de widget con datos Fake a 390 px y tema Material de prueba. No sustituye la prueba en celular.
 
-Compilación Android: en curso en la copia temporal; se registrará su resultado por separado.
+Compilación Android aprobada: flutter build apk --debug --dart-define=NODARA_FAKE=true --no-pub en copia temporal con ruta ASCII. Se generó app-debug.apk. Gradle instaló Android SDK Platform 35 y CMake 3.22.1 que faltaban. No equivale a prueba en dispositivo. GitHub Actions del PR #5 aprobó analyze-and-test: https://github.com/Dae51/nodara/actions/runs/41500292198 .
+
