@@ -38,7 +38,11 @@ class _Certificates extends FakeCertificateDataSource {
 class _Applications extends FakeApplicationDataSource {
   _Applications(super.seed);
   bool fail = false;
+  StreamController<List<Application>>? changes;
   final states = <EstadoPostulacion>[];
+  @override
+  Stream<List<Application>> watchByOrg(String orgId) =>
+      changes?.stream ?? super.watchByOrg(orgId);
   @override
   Future<void> updateEstado({
     required String applicationId,
@@ -58,6 +62,35 @@ class _Applications extends FakeApplicationDataSource {
 }
 
 void main() {
+  test(
+    'Un error del stream bloquea la acreditación de datos anteriores',
+    () async {
+      final item = FakeSeed.applications().first.copyWith(
+        estado: EstadoPostulacion.enCurso,
+      );
+      final changes = StreamController<List<Application>>.broadcast();
+      final source = _Applications([item])..changes = changes;
+      final provider = AccreditationProvider(
+        applicationId: item.id,
+        applications: ApplicationRepository(source),
+        auth: AuthRepository(
+          FakeAuthDataSource(initialUser: FakeSeed.orgFuturo),
+        ),
+      );
+      await _flush();
+      changes.add([item]);
+      await _flush();
+      expect(provider.canAccredit, isTrue);
+      changes.addError(StateError('Sin conexión'));
+      await _flush();
+      expect(provider.canAccredit, isFalse);
+      expect(await provider.acreditar(5), isFalse);
+      expect(source.states, isEmpty);
+      provider.dispose();
+      await changes.close();
+    },
+  );
+
   test('Humo Fake R4/R5: aceptar, acreditar, perfil y validar PDF', () async {
     final item = FakeSeed.applications().first.copyWith(
       estado: EstadoPostulacion.pendiente,

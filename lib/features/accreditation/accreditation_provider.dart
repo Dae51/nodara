@@ -53,6 +53,7 @@ class AccreditationProvider extends ChangeNotifier {
 
   void _fail(String message) {
     _loading = false;
+    _application = null;
     _error = message;
     _emit();
   }

@@ -36,12 +36,13 @@ dependencias ni la rama `master`.
 | Analyze reporta estilo de constructores e importación innecesaria | `flutter analyze` | Campos asignados desde parámetros, import duplicado y if sin llaves | Inicializadores formales, import eliminado y bloques con llaves. Analyze sin hallazgos. |
 | Falla el humo de Javier al cerrar sesión | Suite completa del equipo | El botón estaba al final de una lista que construye elementos al desplazarse | Botón en la cabecera del perfil. Su test original pasa sin modificaciones. |
 | La prueba nueva no encuentra LoadingView | Prueba de widget | Ese elemento estaba fuera del área construida del sliver | Se verifica el indicador visible; se completa el stream y se comprueba el estado vacío. |
+| Se podían conservar datos anteriores después de un error del stream | Revisión del provider y prueba con StreamController | El manejador guardaba el error sin descartar la postulación anterior | Se descarta esa postulación y se bloquea acreditar hasta recibir datos válidos. La prueba confirma que no se escribe. |
 | La captura temporal se queda esperando al generar PDF | Prueba temporal de evidencia | `testWidgets` usa un reloj controlado; el generador trabaja de forma asíncrona | Ejecutar esa exportación de evidencia con `tester.runAsync`. El generador real también se prueba fuera de testWidgets. |
 | Windows avisa que necesita soporte de enlaces simbólicos | `flutter pub get` | Modo de desarrollador desactivado para plugins de escritorio | Se conservaron la configuración del sistema y los archivos del equipo; se ejecutaron analyze/test con las dependencias resueltas y `--no-pub`. La prueba Android se registra aparte. |
 
 ## Validación realizada
 
-`flutter test --no-pub`: **50 pruebas aprobadas**, incluidas 15 nuevas de Rogelio.
+`flutter test --no-pub`: **51 pruebas aprobadas**, incluidas 16 nuevas de Rogelio.
 Se conservaron todos los tests anteriores del equipo.
 
 Las nuevas pruebas cubren transiciones, permisos de organización, horas inválidas,
@@ -75,6 +76,11 @@ Hasta esa conexión, Perfil funciona con las dependencias actuales; los
 certificados siguen en memoria incluso si otras partes están usando Firebase.
 No se hicieron escrituras de prueba en la base Firebase del equipo.
 
+El parche de conexión se verificó en una copia separada del repositorio, sin
+aplicarlo a la rama de Rogelio: análisis sin hallazgos y 52 pruebas aprobadas
+(las 51 de la rama más una prueba del botón de Postulantes). Esa prueba abre
+el diálogo desde `aceptado`, confirma horas y comprueba `completado` en la lista.
+
 ## Uso de IA
 
 Consulta: revisar el documento y el repositorio, implementar la parte asignada a
@@ -92,3 +98,5 @@ Fuentes técnicas consultadas: [pdf](https://pub.dev/packages/pdf),
 El guardado sin reemplazo sigue el patrón de lectura y escritura en una
 transacción descrito por Firebase. El envío del archivo usa Printing.sharePdf,
 documentado por el paquete printing.
+
+![Perfil con datos Fake a 360 px y texto ampliado](rogelio-perfil.png)
