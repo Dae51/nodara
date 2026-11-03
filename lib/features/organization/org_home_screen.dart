@@ -8,6 +8,7 @@ import 'package:nodara/core/widgets/error_view.dart';
 import 'package:nodara/core/widgets/impact_progress_bar.dart';
 import 'package:nodara/core/widgets/loading_view.dart';
 import 'package:nodara/data/models/opportunity.dart';
+import 'package:nodara/features/accreditation/accreditation_dialog.dart';
 import 'package:nodara/features/applicants/applicants_screen.dart';
 import 'package:nodara/features/auth/auth_provider.dart';
 import 'package:nodara/features/organization/opportunity_form_screen.dart';
@@ -58,7 +59,10 @@ class _OrgHomeView extends StatelessWidget {
   void _verPostulantes(BuildContext context, String opportunityId) {
     Navigator.of(context).push(
       MaterialPageRoute(
-        builder: (_) => ApplicantsScreen(opportunityId: opportunityId),
+        builder: (_) => ApplicantsScreen(
+          opportunityId: opportunityId,
+          onAccredit: showAccreditationDialog,
+        ),
       ),
     );
   }

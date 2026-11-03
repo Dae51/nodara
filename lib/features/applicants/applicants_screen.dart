@@ -303,8 +303,7 @@ class _ApplicantCard extends StatelessWidget {
               icon: const Icon(Icons.refresh),
               label: const Text('Reenviar aviso'),
             ),
-          if (accredit != null &&
-              application.estado == EstadoPostulacion.enCurso) ...[
+          if (accredit != null && _puedeAcreditar(application.estado)) ...[
             const SizedBox(height: AppSpacing.sm),
             OutlinedButton.icon(
               onPressed: isBusy ? null : () => accredit(context, application),
@@ -316,6 +315,13 @@ class _ApplicantCard extends StatelessWidget {
       ),
     );
   }
+}
+
+/// Solo se acreditan horas de quien ya fue aceptado y no ha terminado.
+bool _puedeAcreditar(EstadoPostulacion estado) {
+  return estado == EstadoPostulacion.aceptado ||
+      estado == EstadoPostulacion.confirmado ||
+      estado == EstadoPostulacion.enCurso;
 }
 
 /// Pastilla de estado: el estado se comunica con ícono + texto, no solo
