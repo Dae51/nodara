@@ -5,8 +5,9 @@ import 'package:nodara/data/models/application.dart';
 
 class FakeApplicationDataSource implements ApplicationDataSource {
   FakeApplicationDataSource([List<Application>? seed])
-      : _collection =
-            InMemoryCollection<Application>(seed ?? FakeSeed.applications());
+    : _collection = InMemoryCollection<Application>(
+        seed ?? FakeSeed.applications(),
+      );
 
   final InMemoryCollection<Application> _collection;
 

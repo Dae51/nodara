@@ -34,30 +34,27 @@ class AppDependencies {
   factory AppDependencies.fake({
     bool startSignedIn = true,
     bool onboardingVisto = false,
-  }) =>
-      AppDependencies(
-        auth: AuthRepository(
-          FakeAuthDataSource(startSignedIn: startSignedIn),
-        ),
-        opportunities: OpportunityRepository(FakeOpportunityDataSource()),
-        applications: ApplicationRepository(FakeApplicationDataSource()),
-        donations: DonationRepository(FakeDonationDataSource()),
-        notifications: NotificationRepository(FakeNotificationDataSource()),
-        certificates: CertificateRepository(FakeCertificateDataSource()),
-        preferences: InMemoryAppPreferences(visto: onboardingVisto),
-      );
+  }) => AppDependencies(
+    auth: AuthRepository(FakeAuthDataSource(startSignedIn: startSignedIn)),
+    opportunities: OpportunityRepository(FakeOpportunityDataSource()),
+    applications: ApplicationRepository(FakeApplicationDataSource()),
+    donations: DonationRepository(FakeDonationDataSource()),
+    notifications: NotificationRepository(FakeNotificationDataSource()),
+    certificates: CertificateRepository(FakeCertificateDataSource()),
+    preferences: InMemoryAppPreferences(visto: onboardingVisto),
+  );
 
   /// Firebase real. Los módulos aún no migrados conservan su Fake hasta tener
   /// su DataSource Firestore y reglas probadas.
   factory AppDependencies.firebase() => AppDependencies(
-        auth: AuthRepository(FirebaseAuthDataSource()),
-        opportunities: OpportunityRepository(FirebaseOpportunityDataSource()),
-        applications: ApplicationRepository(FirebaseApplicationDataSource()),
-        donations: DonationRepository(FirebaseDonationDataSource()),
-        notifications: NotificationRepository(FirebaseNotificationDataSource()),
-        certificates: CertificateRepository(FakeCertificateDataSource()),
-        preferences: SharedAppPreferences(),
-      );
+    auth: AuthRepository(FirebaseAuthDataSource()),
+    opportunities: OpportunityRepository(FirebaseOpportunityDataSource()),
+    applications: ApplicationRepository(FirebaseApplicationDataSource()),
+    donations: DonationRepository(FirebaseDonationDataSource()),
+    notifications: NotificationRepository(FirebaseNotificationDataSource()),
+    certificates: CertificateRepository(FakeCertificateDataSource()),
+    preferences: SharedAppPreferences(),
+  );
 
   final AuthRepository auth;
   final OpportunityRepository opportunities;

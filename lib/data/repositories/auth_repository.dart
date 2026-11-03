@@ -21,16 +21,15 @@ class AuthRepository {
     required RolUsuario rol,
     required List<Causa> intereses,
     int horasRequeridas = 0,
-  }) =>
-      _dataSource.register(
-        nombre: nombre.trim(),
-        email: email.trim(),
-        password: password,
-        tipo: tipo,
-        rol: rol,
-        intereses: intereses,
-        horasRequeridas: horasRequeridas,
-      );
+  }) => _dataSource.register(
+    nombre: nombre.trim(),
+    email: email.trim(),
+    password: password,
+    tipo: tipo,
+    rol: rol,
+    intereses: intereses,
+    horasRequeridas: horasRequeridas,
+  );
 
   Future<void> signOut() => _dataSource.signOut();
 

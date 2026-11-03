@@ -89,8 +89,9 @@ class ProfileScreen extends StatelessWidget {
                         children: [
                           Text(
                             '${impact.horasCompletadas} / ${impact.horasRequeridas} hrs',
-                            style: AppTextStyles.titleSm
-                                .copyWith(color: AppColors.primary),
+                            style: AppTextStyles.titleSm.copyWith(
+                              color: AppColors.primary,
+                            ),
                           ),
                           const Spacer(),
                           Text(
@@ -125,8 +126,7 @@ class ProfileScreen extends StatelessWidget {
               child: PlaceholderView(
                 icon: Icons.person_outline,
                 title: 'Perfil',
-                message:
-                    'Aquí podrás editar tus datos, intereses y descargar tu reporte de horas.',
+                message: 'Aquí podrás editar tus datos, intereses y descargar tu reporte de horas.',
               ),
             ),
           ],

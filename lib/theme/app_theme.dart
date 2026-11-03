@@ -14,43 +14,91 @@ abstract final class AppTextStyles {
     required FontWeight weight,
     required double height,
     double spacing = 0,
-  }) =>
-      GoogleFonts.robotoFlex(
-        fontSize: size,
-        fontWeight: weight,
-        height: height / size,
-        letterSpacing: spacing * size,
-        color: AppColors.onSurface,
-      );
+  }) => GoogleFonts.robotoFlex(
+    fontSize: size,
+    fontWeight: weight,
+    height: height / size,
+    letterSpacing: spacing * size,
+    color: AppColors.onSurface,
+  );
 
-  static final displayLg =
-      _roboto(size: 40, weight: FontWeight.w700, height: 48, spacing: -0.02);
-  static final headlineLg =
-      _roboto(size: 32, weight: FontWeight.w700, height: 40, spacing: -0.01);
-  static final headlineMobile =
-      _roboto(size: 26, weight: FontWeight.w700, height: 34, spacing: -0.01);
-  static final headlineMd =
-      _roboto(size: 24, weight: FontWeight.w600, height: 32);
-  static final headlineSm =
-      _roboto(size: 20, weight: FontWeight.w600, height: 28);
-  static final titleLg =
-      _roboto(size: 18, weight: FontWeight.w600, height: 24);
-  static final titleMd =
-      _roboto(size: 16, weight: FontWeight.w600, height: 24, spacing: 0.01);
-  static final titleSm =
-      _roboto(size: 14, weight: FontWeight.w600, height: 20, spacing: 0.01);
-  static final bodyLg =
-      _roboto(size: 16, weight: FontWeight.w400, height: 24, spacing: 0.01);
-  static final bodyMd =
-      _roboto(size: 14, weight: FontWeight.w400, height: 20, spacing: 0.01);
-  static final bodySm =
-      _roboto(size: 12, weight: FontWeight.w400, height: 16, spacing: 0.02);
-  static final labelLg =
-      _roboto(size: 14, weight: FontWeight.w600, height: 20, spacing: 0.02);
-  static final labelMd =
-      _roboto(size: 12, weight: FontWeight.w600, height: 16, spacing: 0.03);
-  static final labelSm =
-      _roboto(size: 11, weight: FontWeight.w600, height: 16, spacing: 0.04);
+  static final displayLg = _roboto(
+    size: 40,
+    weight: FontWeight.w700,
+    height: 48,
+    spacing: -0.02,
+  );
+  static final headlineLg = _roboto(
+    size: 32,
+    weight: FontWeight.w700,
+    height: 40,
+    spacing: -0.01,
+  );
+  static final headlineMobile = _roboto(
+    size: 26,
+    weight: FontWeight.w700,
+    height: 34,
+    spacing: -0.01,
+  );
+  static final headlineMd = _roboto(
+    size: 24,
+    weight: FontWeight.w600,
+    height: 32,
+  );
+  static final headlineSm = _roboto(
+    size: 20,
+    weight: FontWeight.w600,
+    height: 28,
+  );
+  static final titleLg = _roboto(size: 18, weight: FontWeight.w600, height: 24);
+  static final titleMd = _roboto(
+    size: 16,
+    weight: FontWeight.w600,
+    height: 24,
+    spacing: 0.01,
+  );
+  static final titleSm = _roboto(
+    size: 14,
+    weight: FontWeight.w600,
+    height: 20,
+    spacing: 0.01,
+  );
+  static final bodyLg = _roboto(
+    size: 16,
+    weight: FontWeight.w400,
+    height: 24,
+    spacing: 0.01,
+  );
+  static final bodyMd = _roboto(
+    size: 14,
+    weight: FontWeight.w400,
+    height: 20,
+    spacing: 0.01,
+  );
+  static final bodySm = _roboto(
+    size: 12,
+    weight: FontWeight.w400,
+    height: 16,
+    spacing: 0.02,
+  );
+  static final labelLg = _roboto(
+    size: 14,
+    weight: FontWeight.w600,
+    height: 20,
+    spacing: 0.02,
+  );
+  static final labelMd = _roboto(
+    size: 12,
+    weight: FontWeight.w600,
+    height: 16,
+    spacing: 0.03,
+  );
+  static final labelSm = _roboto(
+    size: 11,
+    weight: FontWeight.w600,
+    height: 16,
+    spacing: 0.04,
+  );
 }
 
 abstract final class AppTheme {
@@ -146,7 +194,9 @@ abstract final class AppTheme {
           shape: RoundedRectangleBorder(
             borderRadius: BorderRadius.circular(AppRadius.lg),
           ),
-          textStyle: AppTextStyles.labelLg.copyWith(fontWeight: FontWeight.w700),
+          textStyle: AppTextStyles.labelLg.copyWith(
+            fontWeight: FontWeight.w700,
+          ),
         ),
       ),
       outlinedButtonTheme: OutlinedButtonThemeData(
@@ -171,8 +221,9 @@ abstract final class AppTheme {
         selectedColor: AppColors.secondaryContainer,
         side: const BorderSide(color: AppColors.outlineVariant),
         labelStyle: AppTextStyles.labelMd,
-        secondaryLabelStyle:
-            AppTextStyles.labelMd.copyWith(color: AppColors.onSecondaryContainer),
+        secondaryLabelStyle: AppTextStyles.labelMd.copyWith(
+          color: AppColors.onSecondaryContainer,
+        ),
         shape: RoundedRectangleBorder(
           borderRadius: BorderRadius.circular(AppRadius.pill),
         ),
@@ -181,8 +232,10 @@ abstract final class AppTheme {
         filled: true,
         fillColor: AppColors.surfaceContainerLowest,
         hintStyle: AppTextStyles.bodyMd.copyWith(color: AppColors.outline),
-        contentPadding:
-            const EdgeInsets.symmetric(horizontal: AppSpacing.md, vertical: 14),
+        contentPadding: const EdgeInsets.symmetric(
+          horizontal: AppSpacing.md,
+          vertical: 14,
+        ),
         border: OutlineInputBorder(
           borderRadius: BorderRadius.circular(AppRadius.md),
           borderSide: const BorderSide(color: AppColors.outlineVariant),
@@ -200,15 +253,18 @@ abstract final class AppTheme {
         backgroundColor: AppColors.surfaceContainerLowest,
         surfaceTintColor: Colors.transparent,
         indicatorColor: AppColors.secondaryContainer,
-        indicatorShape:
-            RoundedRectangleBorder(borderRadius: BorderRadius.circular(AppRadius.pill)),
+        indicatorShape: RoundedRectangleBorder(
+          borderRadius: BorderRadius.circular(AppRadius.pill),
+        ),
         height: 80,
         elevation: 0,
         labelBehavior: NavigationDestinationLabelBehavior.alwaysShow,
         labelTextStyle: WidgetStateProperty.resolveWith(
           (states) => states.contains(WidgetState.selected)
               ? AppTextStyles.labelSm.copyWith(color: AppColors.onSurface)
-              : AppTextStyles.labelSm.copyWith(color: AppColors.onSurfaceVariant),
+              : AppTextStyles.labelSm.copyWith(
+                  color: AppColors.onSurfaceVariant,
+                ),
         ),
         iconTheme: WidgetStateProperty.resolveWith(
           (states) => IconThemeData(
@@ -222,8 +278,9 @@ abstract final class AppTheme {
       snackBarTheme: SnackBarThemeData(
         behavior: SnackBarBehavior.floating,
         backgroundColor: AppColors.onSurface,
-        contentTextStyle:
-            AppTextStyles.labelMd.copyWith(color: AppColors.surface),
+        contentTextStyle: AppTextStyles.labelMd.copyWith(
+          color: AppColors.surface,
+        ),
         shape: RoundedRectangleBorder(
           borderRadius: BorderRadius.circular(AppRadius.pill),
         ),

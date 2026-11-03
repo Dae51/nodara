@@ -7,11 +7,11 @@ class NotificationRepository {
   final NotificationDataSource _dataSource;
 
   /// Avisos del usuario, más recientes primero.
-  Stream<List<AppNotification>> watchMine(String userId) =>
-      _dataSource.watchByUser(userId).map(
-            (list) =>
-                [...list]..sort((a, b) => b.creadaEn.compareTo(a.creadaEn)),
-          );
+  Stream<List<AppNotification>> watchMine(String userId) => _dataSource
+      .watchByUser(userId)
+      .map(
+        (list) => [...list]..sort((a, b) => b.creadaEn.compareTo(a.creadaEn)),
+      );
 
   Future<void> enviar(String userId, AppNotification notification) =>
       _dataSource.create(userId, notification);

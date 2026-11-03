@@ -7,7 +7,7 @@ import 'package:nodara/data/models/donation_point.dart';
 /// Fuente Firestore de los puntos de donación visibles en el módulo Donar.
 class FirebaseDonationDataSource implements DonationDataSource {
   FirebaseDonationDataSource({FirebaseFirestore? firestore})
-      : _db = firestore ?? FirebaseFirestore.instance;
+    : _db = firestore ?? FirebaseFirestore.instance;
 
   final FirebaseFirestore _db;
 
@@ -19,10 +19,7 @@ class FirebaseDonationDataSource implements DonationDataSource {
       .map(
         (snapshot) => snapshot.docs
             .map(
-              (doc) => DonationPoint.fromMap(
-                doc.id,
-                fromFirestore(doc.data()),
-              ),
+              (doc) => DonationPoint.fromMap(doc.id, fromFirestore(doc.data())),
             )
             .toList(growable: false),
       );

@@ -10,7 +10,7 @@ import 'package:nodara/data/models/opportunity.dart';
 /// clase se limita a escuchar y persistir documentos del servidor.
 class FirebaseOpportunityDataSource implements OpportunityDataSource {
   FirebaseOpportunityDataSource({FirebaseFirestore? firestore})
-      : _db = firestore ?? FirebaseFirestore.instance;
+    : _db = firestore ?? FirebaseFirestore.instance;
 
   final FirebaseFirestore _db;
 

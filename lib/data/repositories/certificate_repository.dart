@@ -5,7 +5,7 @@ import 'package:nodara/data/models/certificate.dart';
 
 class CertificateRepository {
   CertificateRepository(this._dataSource, {Random? random})
-      : _random = random ?? Random.secure();
+    : _random = random ?? Random.secure();
 
   final CertificateDataSource _dataSource;
   final Random _random;
@@ -16,9 +16,9 @@ class CertificateRepository {
   /// confusiones al escribirlo).
   String generarCodigo() {
     String bloque() => List.generate(
-          4,
-          (_) => _alfabeto[_random.nextInt(_alfabeto.length)],
-        ).join();
+      4,
+      (_) => _alfabeto[_random.nextInt(_alfabeto.length)],
+    ).join();
     return 'NOD-${bloque()}-${bloque()}';
   }
 

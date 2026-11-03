@@ -12,7 +12,7 @@ import 'package:nodara/data/models/opportunity.dart';
 /// (organización). Cualquier contraseña de 6+ caracteres funciona.
 class FakeAuthDataSource implements AuthDataSource {
   FakeAuthDataSource({AppUser? initialUser, bool startSignedIn = true})
-      : _current = startSignedIn ? (initialUser ?? FakeSeed.sofia) : null {
+    : _current = startSignedIn ? (initialUser ?? FakeSeed.sofia) : null {
     for (final user in FakeSeed.users) {
       _users[user.email] = user;
     }

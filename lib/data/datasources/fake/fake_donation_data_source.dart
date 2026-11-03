@@ -5,8 +5,9 @@ import 'package:nodara/data/models/donation_point.dart';
 
 class FakeDonationDataSource implements DonationDataSource {
   FakeDonationDataSource([List<DonationPoint>? seed])
-      : _collection =
-            InMemoryCollection<DonationPoint>(seed ?? FakeSeed.donationPoints());
+    : _collection = InMemoryCollection<DonationPoint>(
+        seed ?? FakeSeed.donationPoints(),
+      );
 
   final InMemoryCollection<DonationPoint> _collection;
 

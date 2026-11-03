@@ -5,8 +5,9 @@ import 'package:nodara/data/models/opportunity.dart';
 
 class FakeOpportunityDataSource implements OpportunityDataSource {
   FakeOpportunityDataSource([List<Opportunity>? seed])
-      : _collection =
-            InMemoryCollection<Opportunity>(seed ?? FakeSeed.opportunities());
+    : _collection = InMemoryCollection<Opportunity>(
+        seed ?? FakeSeed.opportunities(),
+      );
 
   final InMemoryCollection<Opportunity> _collection;
 

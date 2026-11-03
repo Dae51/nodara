@@ -50,9 +50,9 @@ class ApplicationRepository {
   }
 
   Future<void> retirar(Application application) => _dataSource.updateEstado(
-        applicationId: application.id,
-        estado: EstadoPostulacion.retirado,
-      );
+    applicationId: application.id,
+    estado: EstadoPostulacion.retirado,
+  );
 
   /// Cambio de estado hecho por la organización (F3).
   Future<void> cambiarEstado({
@@ -60,13 +60,12 @@ class ApplicationRepository {
     required EstadoPostulacion estado,
     int? horasAcreditadas,
     String? motivo,
-  }) =>
-      _dataSource.updateEstado(
-        applicationId: applicationId,
-        estado: estado,
-        horasAcreditadas: horasAcreditadas,
-        motivo: motivo,
-      );
+  }) => _dataSource.updateEstado(
+    applicationId: applicationId,
+    estado: estado,
+    horasAcreditadas: horasAcreditadas,
+    motivo: motivo,
+  );
 
   static List<Application> _sortByDate(List<Application> list) =>
       [...list]..sort((a, b) => b.creadaEn.compareTo(a.creadaEn));

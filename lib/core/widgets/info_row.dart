@@ -49,20 +49,23 @@ class InfoRow extends StatelessWidget {
               if (label case final labelText?)
                 Text(
                   labelText,
-                  style: AppTextStyles.labelMd
-                      .copyWith(color: AppColors.onSurfaceVariant),
+                  style: AppTextStyles.labelMd.copyWith(
+                    color: AppColors.onSurfaceVariant,
+                  ),
                 ),
               Text(
                 title,
-                style: AppTextStyles.titleSm
-                    .copyWith(color: AppColors.onSurface),
+                style: AppTextStyles.titleSm.copyWith(
+                  color: AppColors.onSurface,
+                ),
               ),
               if (subtitle case final subtitleText?) ...[
                 const SizedBox(height: 2),
                 Text(
                   subtitleText,
-                  style: AppTextStyles.bodySm
-                      .copyWith(color: AppColors.onSurfaceVariant),
+                  style: AppTextStyles.bodySm.copyWith(
+                    color: AppColors.onSurfaceVariant,
+                  ),
                 ),
               ],
             ],
