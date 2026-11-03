@@ -5,6 +5,7 @@ import 'package:nodara/data/datasources/fake/fake_donation_data_source.dart';
 import 'package:nodara/data/datasources/fake/fake_notification_data_source.dart';
 import 'package:nodara/data/datasources/fake/fake_opportunity_data_source.dart';
 import 'package:nodara/data/datasources/firebase/firebase_auth_data_source.dart';
+import 'package:nodara/data/datasources/firebase/firestore_certificate_data_source.dart';
 import 'package:nodara/data/datasources/firebase/firebase_application_data_source.dart';
 import 'package:nodara/data/datasources/firebase/firebase_donation_data_source.dart';
 import 'package:nodara/data/datasources/firebase/firebase_notification_data_source.dart';
@@ -52,7 +53,7 @@ class AppDependencies {
     applications: ApplicationRepository(FirebaseApplicationDataSource()),
     donations: DonationRepository(FirebaseDonationDataSource()),
     notifications: NotificationRepository(FirebaseNotificationDataSource()),
-    certificates: CertificateRepository(FakeCertificateDataSource()),
+    certificates: CertificateRepository(FirestoreCertificateDataSource()),
     preferences: SharedAppPreferences(),
   );
 
