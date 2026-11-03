@@ -7,25 +7,25 @@ import 'package:nodara/data/models/opportunity.dart';
 extension CausaIcons on Causa {
   /// Ícono del chip de filtro.
   IconData get chipIcon => switch (this) {
-        Causa.medioambiente => Icons.eco,
-        Causa.animales => Icons.pets,
-        Causa.comunidades => Icons.groups,
-        Causa.educacion => Icons.school,
-        Causa.salud => Icons.favorite,
-        Causa.cultura => Icons.palette,
-        Causa.emergencias => Icons.health_and_safety,
-      };
+    Causa.medioambiente => Icons.eco,
+    Causa.animales => Icons.pets,
+    Causa.comunidades => Icons.groups,
+    Causa.educacion => Icons.school,
+    Causa.salud => Icons.favorite,
+    Causa.cultura => Icons.palette,
+    Causa.emergencias => Icons.health_and_safety,
+  };
 
   /// Ícono de la insignia sobre la imagen de la tarjeta.
   IconData get badgeIcon => switch (this) {
-        Causa.medioambiente => Icons.forest,
-        Causa.animales => Icons.pets,
-        Causa.comunidades => Icons.volunteer_activism,
-        Causa.educacion => Icons.school,
-        Causa.salud => Icons.medical_services,
-        Causa.cultura => Icons.palette,
-        Causa.emergencias => Icons.health_and_safety,
-      };
+    Causa.medioambiente => Icons.forest,
+    Causa.animales => Icons.pets,
+    Causa.comunidades => Icons.volunteer_activism,
+    Causa.educacion => Icons.school,
+    Causa.salud => Icons.medical_services,
+    Causa.cultura => Icons.palette,
+    Causa.emergencias => Icons.health_and_safety,
+  };
 }
 
 const _benefitIcons = <String, IconData>{

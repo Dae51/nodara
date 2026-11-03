@@ -10,8 +10,8 @@ import 'package:nodara/data/models/opportunity.dart';
 /// `users/{uid}` de Firestore.
 class FirebaseAuthDataSource implements AuthDataSource {
   FirebaseAuthDataSource({FirebaseAuth? auth, FirebaseFirestore? firestore})
-      : _auth = auth ?? FirebaseAuth.instance,
-        _db = firestore ?? FirebaseFirestore.instance;
+    : _auth = auth ?? FirebaseAuth.instance,
+      _db = firestore ?? FirebaseFirestore.instance;
 
   final FirebaseAuth _auth;
   final FirebaseFirestore _db;
@@ -78,7 +78,8 @@ class FirebaseAuthDataSource implements AuthDataSource {
         password: password,
       );
       final user = credential.user;
-      if (user == null) throw const AuthException('No pudimos crear tu cuenta.');
+      if (user == null)
+        throw const AuthException('No pudimos crear tu cuenta.');
       await user.updateDisplayName(nombre);
       final appUser = AppUser(
         uid: user.uid,

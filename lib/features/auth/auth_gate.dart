@@ -30,9 +30,9 @@ class AuthGate extends StatefulWidget {
 class _AuthGateState extends State<AuthGate> {
   late final AppPreferences _preferences;
 
-  /// Se crea una sola vez en initState (no dentro de build) para no abrir
-  /// una suscripción nueva en cada reconstrucción.
-  late final Stream<AppUser?> _authStream;
+  /// Se crea en initState (no dentro de build) para no abrir una suscripción
+  /// nueva en cada reconstrucción. No es `final`: "Reintentar" la recrea.
+  late Stream<AppUser?> _authStream;
 
   /// `null` mientras se lee si el onboarding ya se vio.
   _AuthStep? _step;
@@ -63,6 +63,13 @@ class _AuthGateState extends State<AuthGate> {
     setState(() => _step = step);
   }
 
+  /// Vuelve a suscribirse al estado de sesión tras un error (ej. sin red).
+  void _reintentarSesion() {
+    setState(() {
+      _authStream = context.read<AppDependencies>().auth.authStateChanges();
+    });
+  }
+
   @override
   Widget build(BuildContext context) {
     return StreamBuilder<AppUser?>(
@@ -72,9 +79,12 @@ class _AuthGateState extends State<AuthGate> {
           return const Scaffold(body: LoadingView());
         }
         if (snapshot.hasError) {
-          return const Scaffold(
+          return Scaffold(
             body: Center(
-              child: ErrorView(message: 'No pudimos verificar tu sesión.'),
+              child: ErrorView(
+                message: 'No pudimos verificar tu sesión.',
+                onRetry: _reintentarSesion,
+              ),
             ),
           );
         }
@@ -92,13 +102,9 @@ class _AuthGateState extends State<AuthGate> {
             onLogin: () => _finishOnboarding(_AuthStep.login),
           );
         } else if (_step == _AuthStep.login) {
-          return LoginScreen(
-            onCreateAccount: () => _goTo(_AuthStep.register),
-          );
+          return LoginScreen(onCreateAccount: () => _goTo(_AuthStep.register));
         } else if (_step == _AuthStep.register) {
-          return RegisterScreen(
-            onLogin: () => _goTo(_AuthStep.login),
-          );
+          return RegisterScreen(onLogin: () => _goTo(_AuthStep.login));
         }
         // Todavía se está leyendo si el onboarding ya se vio.
         return const Scaffold(body: LoadingView());

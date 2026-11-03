@@ -48,20 +48,19 @@ class DonationPoint {
   final bool activa;
 
   /// Link para abrir la ubicación en Google Maps (usar con url_launcher).
-  Uri get mapsUri => Uri.parse(
-        'https://www.google.com/maps/search/?api=1&query=$lat,$lng',
-      );
+  Uri get mapsUri =>
+      Uri.parse('https://www.google.com/maps/search/?api=1&query=$lat,$lng');
 
   Map<String, Object?> toMap() => {
-        'orgId': orgId,
-        'nombre': nombre,
-        'causa': causa.name,
-        'aceptan': aceptan,
-        'direccion': direccion,
-        'departamento': departamento,
-        'lat': lat,
-        'lng': lng,
-        'horario': horario,
-        'activa': activa,
-      };
+    'orgId': orgId,
+    'nombre': nombre,
+    'causa': causa.name,
+    'aceptan': aceptan,
+    'direccion': direccion,
+    'departamento': departamento,
+    'lat': lat,
+    'lng': lng,
+    'horario': horario,
+    'activa': activa,
+  };
 }

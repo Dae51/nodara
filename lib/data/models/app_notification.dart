@@ -31,19 +31,19 @@ class AppNotification {
   final DateTime creadaEn;
 
   Map<String, Object?> toMap() => {
-        'titulo': titulo,
-        'cuerpo': cuerpo,
-        'applicationId': applicationId,
-        'leida': leida,
-        'creadaEn': creadaEn,
-      };
+    'titulo': titulo,
+    'cuerpo': cuerpo,
+    'applicationId': applicationId,
+    'leida': leida,
+    'creadaEn': creadaEn,
+  };
 
   AppNotification copyWith({String? id, bool? leida}) => AppNotification(
-        id: id ?? this.id,
-        titulo: titulo,
-        cuerpo: cuerpo,
-        applicationId: applicationId,
-        leida: leida ?? this.leida,
-        creadaEn: creadaEn,
-      );
+    id: id ?? this.id,
+    titulo: titulo,
+    cuerpo: cuerpo,
+    applicationId: applicationId,
+    leida: leida ?? this.leida,
+    creadaEn: creadaEn,
+  );
 }

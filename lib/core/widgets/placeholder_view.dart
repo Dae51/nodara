@@ -39,8 +39,9 @@ class PlaceholderView extends StatelessWidget {
             Text(
               message,
               textAlign: TextAlign.center,
-              style: AppTextStyles.bodySm
-                  .copyWith(color: AppColors.onSurfaceVariant),
+              style: AppTextStyles.bodySm.copyWith(
+                color: AppColors.onSurfaceVariant,
+              ),
             ),
           ],
         ),

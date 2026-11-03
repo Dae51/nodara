@@ -31,8 +31,9 @@ class ErrorView extends StatelessWidget {
           Text(
             message,
             textAlign: TextAlign.center,
-            style: AppTextStyles.bodyMd
-                .copyWith(color: AppColors.onSurfaceVariant),
+            style: AppTextStyles.bodyMd.copyWith(
+              color: AppColors.onSurfaceVariant,
+            ),
           ),
           if (onRetry != null) ...[
             const SizedBox(height: AppSpacing.sm),

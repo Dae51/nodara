@@ -17,8 +17,7 @@ class StatPill extends StatelessWidget {
     this.foreground,
     this.dotColor,
     this.bold = true,
-    this.padding =
-        const EdgeInsets.symmetric(horizontal: 10, vertical: 4),
+    this.padding = const EdgeInsets.symmetric(horizontal: 10, vertical: 4),
   });
 
   final String label;
@@ -36,7 +35,8 @@ class StatPill extends StatelessWidget {
     return Container(
       padding: padding,
       decoration: BoxDecoration(
-        color: background ?? AppColors.secondaryContainer.withValues(alpha: 0.25),
+        color:
+            background ?? AppColors.secondaryContainer.withValues(alpha: 0.25),
         borderRadius: BorderRadius.circular(AppRadius.pill),
       ),
       child: Row(

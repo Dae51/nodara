@@ -36,8 +36,9 @@ class EmptyView extends StatelessWidget {
           Text(
             message,
             textAlign: TextAlign.center,
-            style: AppTextStyles.bodyMd
-                .copyWith(color: AppColors.onSurfaceVariant),
+            style: AppTextStyles.bodyMd.copyWith(
+              color: AppColors.onSurfaceVariant,
+            ),
           ),
           if (label != null && onAction != null) ...[
             const SizedBox(height: AppSpacing.sm),

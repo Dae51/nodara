@@ -23,20 +23,23 @@ class MotivationalBanner extends StatelessWidget {
               color: AppColors.secondaryContainer,
               shape: BoxShape.circle,
             ),
-            child: const Icon(Icons.bolt,
-                size: 20, color: AppColors.onSecondaryContainer),
+            child: const Icon(
+              Icons.bolt,
+              size: 20,
+              color: AppColors.onSecondaryContainer,
+            ),
           ),
           const SizedBox(width: AppSpacing.sm),
           Expanded(
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
-                Text('¡Vas a mitad de camino!',
-                    style: AppTextStyles.labelMd),
+                Text('¡Vas a mitad de camino!', style: AppTextStyles.labelMd),
                 Text(
                   'Completá tus horas antes del 30 de Junio para validar tu certificado de fin de curso.',
-                  style: AppTextStyles.bodySm
-                      .copyWith(color: AppColors.onSurfaceVariant),
+                  style: AppTextStyles.bodySm.copyWith(
+                    color: AppColors.onSurfaceVariant,
+                  ),
                 ),
               ],
             ),

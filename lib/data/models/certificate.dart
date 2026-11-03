@@ -30,10 +30,10 @@ class Certificate {
   final DateTime emitidoEn;
 
   Map<String, Object?> toMap() => {
-        'userId': userId,
-        'nombre': nombre,
-        'applicationIds': applicationIds,
-        'totalHoras': totalHoras,
-        'emitidoEn': emitidoEn,
-      };
+    'userId': userId,
+    'nombre': nombre,
+    'applicationIds': applicationIds,
+    'totalHoras': totalHoras,
+    'emitidoEn': emitidoEn,
+  };
 }

@@ -23,9 +23,7 @@ Future<void> main() async {
     runApp(NodaraApp(dependencies: AppDependencies.fake(startSignedIn: false)));
     return;
   }
-  await Firebase.initializeApp(
-    options: DefaultFirebaseOptions.currentPlatform,
-  );
+  await Firebase.initializeApp(options: DefaultFirebaseOptions.currentPlatform);
   runApp(NodaraApp(dependencies: AppDependencies.firebase()));
 }
 
@@ -39,9 +37,7 @@ class NodaraApp extends StatelessWidget {
     return MultiProvider(
       providers: [
         Provider<AppDependencies>.value(value: dependencies),
-        ChangeNotifierProvider(
-          create: (_) => AuthProvider(dependencies.auth),
-        ),
+        ChangeNotifierProvider(create: (_) => AuthProvider(dependencies.auth)),
         ChangeNotifierProvider(
           create: (_) => ExploreProvider(dependencies.opportunities),
         ),

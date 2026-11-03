@@ -56,15 +56,16 @@ class _RegisterScreenState extends State<RegisterScreen> {
     FocusScope.of(context).unfocus();
     final pideHoras = _esVoluntario && _tipo == TipoUsuario.estudiante;
     await context.read<AuthProvider>().register(
-          nombre: _nombreController.text,
-          email: _emailController.text,
-          password: _passwordController.text,
-          tipo: _tipo,
-          rol: _rol,
-          intereses: _esVoluntario ? _intereses.toList() : const [],
-          horasRequeridas:
-              pideHoras ? int.tryParse(_horasController.text.trim()) ?? 0 : 0,
-        );
+      nombre: _nombreController.text,
+      email: _emailController.text,
+      password: _passwordController.text,
+      tipo: _tipo,
+      rol: _rol,
+      intereses: _esVoluntario ? _intereses.toList() : const [],
+      horasRequeridas: pideHoras
+          ? int.tryParse(_horasController.text.trim()) ?? 0
+          : 0,
+    );
   }
 
   void _toggleInteres(Causa causa, bool selected) {
@@ -129,7 +130,9 @@ class _RegisterScreenState extends State<RegisterScreen> {
                             ? 'Nombre'
                             : 'Nombre de la organización',
                         prefixIcon: Icon(
-                          _esVoluntario ? Icons.person_outline : Icons.apartment,
+                          _esVoluntario
+                              ? Icons.person_outline
+                              : Icons.apartment,
                         ),
                       ),
                     ),
@@ -172,8 +175,10 @@ class _RegisterScreenState extends State<RegisterScreen> {
                     ),
                     if (_esVoluntario) ...[
                       const SizedBox(height: AppSpacing.lg),
-                      Text('¿Qué haces actualmente?',
-                          style: AppTextStyles.titleSm),
+                      Text(
+                        '¿Qué haces actualmente?',
+                        style: AppTextStyles.titleSm,
+                      ),
                       const SizedBox(height: AppSpacing.sm),
                       Wrap(
                         spacing: AppSpacing.sm,
@@ -195,14 +200,17 @@ class _RegisterScreenState extends State<RegisterScreen> {
                           textInputAction: TextInputAction.done,
                           validator: Validators.horasOpcionales,
                           decoration: const InputDecoration(
-                            labelText: 'Horas sociales que pide tu U (opcional)',
+                            labelText:
+                                'Horas sociales que pide tu U (opcional)',
                             prefixIcon: Icon(Icons.timer_outlined),
                           ),
                         ),
                       ],
                       const SizedBox(height: AppSpacing.lg),
-                      Text('Causas que te interesan (opcional)',
-                          style: AppTextStyles.titleSm),
+                      Text(
+                        'Causas que te interesan (opcional)',
+                        style: AppTextStyles.titleSm,
+                      ),
                       const SizedBox(height: AppSpacing.sm),
                       Wrap(
                         spacing: AppSpacing.sm,
@@ -236,8 +244,9 @@ class _RegisterScreenState extends State<RegisterScreen> {
                       children: [
                         Text(
                           '¿Ya tienes cuenta?',
-                          style: AppTextStyles.bodyMd
-                              .copyWith(color: AppColors.onSurfaceVariant),
+                          style: AppTextStyles.bodyMd.copyWith(
+                            color: AppColors.onSurfaceVariant,
+                          ),
                         ),
                         TextButton(
                           onPressed: widget.onLogin,

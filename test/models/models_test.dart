@@ -8,29 +8,28 @@ Opportunity _opportunity({
   int cuposOcupados = 4,
   bool activa = true,
   required DateTime cierre,
-}) =>
-    Opportunity(
-      id: 'o1',
-      orgId: 'org',
-      orgNombre: 'Org',
-      titulo: 'Título largo',
-      tituloCorto: 'Corto',
-      descripcion: 'Desc',
-      causa: Causa.animales,
-      formato: Formato.jornada,
-      etiqueta: 'Animales',
-      ubicacion: 'San Salvador',
-      horario: 'Sábado',
-      compromiso: '1 día',
-      cierreInscripcion: cierre,
-      horasEstimadas: 8,
-      cuposTotal: cuposTotal,
-      cuposOcupados: cuposOcupados,
-      beneficios: const [
-        Benefit(iconKey: 'seguro', titulo: 'Seguro', subtitulo: 'Incluido'),
-      ],
-      activa: activa,
-    );
+}) => Opportunity(
+  id: 'o1',
+  orgId: 'org',
+  orgNombre: 'Org',
+  titulo: 'Título largo',
+  tituloCorto: 'Corto',
+  descripcion: 'Desc',
+  causa: Causa.animales,
+  formato: Formato.jornada,
+  etiqueta: 'Animales',
+  ubicacion: 'San Salvador',
+  horario: 'Sábado',
+  compromiso: '1 día',
+  cierreInscripcion: cierre,
+  horasEstimadas: 8,
+  cuposTotal: cuposTotal,
+  cuposOcupados: cuposOcupados,
+  beneficios: const [
+    Benefit(iconKey: 'seguro', titulo: 'Seguro', subtitulo: 'Incluido'),
+  ],
+  activa: activa,
+);
 
 void main() {
   final hoy = DateTime(2026, 10, 28);

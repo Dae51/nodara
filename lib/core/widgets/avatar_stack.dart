@@ -35,45 +35,58 @@ class AvatarStack extends StatelessWidget {
     final children = <Widget>[];
 
     for (var i = 0; i < images.length; i++) {
-      children.add(_ring(
-        RemoteImage(url: images[i], borderRadius: BorderRadius.circular(size)),
-      ));
+      children.add(
+        _ring(
+          RemoteImage(
+            url: images[i],
+            borderRadius: BorderRadius.circular(size),
+          ),
+        ),
+      );
     }
 
     for (var i = 0; i < initials.length; i++) {
       final (bg, fg) = _initialColors[i % _initialColors.length];
-      children.add(_ring(Container(
-        width: size,
-        height: size,
-        alignment: Alignment.center,
-        color: bg,
-        child: Text(
-          initials[i],
-          style: AppTextStyles.labelSm.copyWith(
-            color: fg,
-            fontSize: size * 0.42,
-            fontWeight: FontWeight.w700,
+      children.add(
+        _ring(
+          Container(
+            width: size,
+            height: size,
+            alignment: Alignment.center,
+            color: bg,
+            child: Text(
+              initials[i],
+              style: AppTextStyles.labelSm.copyWith(
+                color: fg,
+                fontSize: size * 0.42,
+                fontWeight: FontWeight.w700,
+              ),
+            ),
           ),
         ),
-      )));
+      );
     }
 
     final extraLabel = extra;
     if (extraLabel != null) {
-      children.add(_ring(Container(
-        width: size,
-        height: size,
-        alignment: Alignment.center,
-        color: AppColors.tertiaryFixed,
-        child: Text(
-          extraLabel,
-          style: AppTextStyles.labelSm.copyWith(
-            color: AppColors.onTertiaryFixed,
-            fontSize: size * 0.42,
-            fontWeight: FontWeight.w700,
+      children.add(
+        _ring(
+          Container(
+            width: size,
+            height: size,
+            alignment: Alignment.center,
+            color: AppColors.tertiaryFixed,
+            child: Text(
+              extraLabel,
+              style: AppTextStyles.labelSm.copyWith(
+                color: AppColors.onTertiaryFixed,
+                fontSize: size * 0.42,
+                fontWeight: FontWeight.w700,
+              ),
+            ),
           ),
         ),
-      )));
+      );
     }
 
     if (children.isEmpty) return const SizedBox.shrink();
@@ -87,23 +100,20 @@ class AvatarStack extends StatelessWidget {
       child: Stack(
         children: [
           for (var i = 0; i < children.length; i++)
-            Positioned(
-              left: i * step,
-              child: children[i],
-            ),
+            Positioned(left: i * step, child: children[i]),
         ],
       ),
     );
   }
 
   Widget _ring(Widget child) => Container(
-        width: size,
-        height: size,
-        decoration: BoxDecoration(
-          shape: BoxShape.circle,
-          border: Border.all(color: ringColor, width: 2),
-        ),
-        clipBehavior: Clip.antiAlias,
-        child: child,
-      );
+    width: size,
+    height: size,
+    decoration: BoxDecoration(
+      shape: BoxShape.circle,
+      border: Border.all(color: ringColor, width: 2),
+    ),
+    clipBehavior: Clip.antiAlias,
+    child: child,
+  );
 }

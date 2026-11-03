@@ -40,9 +40,9 @@ class _LoginScreenState extends State<LoginScreen> {
     if (form == null || !form.validate()) return;
     FocusScope.of(context).unfocus();
     await context.read<AuthProvider>().signIn(
-          email: _emailController.text,
-          password: _passwordController.text,
-        );
+      email: _emailController.text,
+      password: _passwordController.text,
+    );
   }
 
   Future<void> _recuperarContrasena() async {
@@ -83,7 +83,8 @@ class _LoginScreenState extends State<LoginScreen> {
                   children: [
                     const AuthHeader(
                       title: 'Inicia sesión',
-                      subtitle: 'Sigue sumando horas y ayudando a tu comunidad.',
+                      subtitle:
+                          'Sigue sumando horas y ayudando a tu comunidad.',
                     ),
                     const SizedBox(height: AppSpacing.lg),
                     TextFormField(
@@ -145,8 +146,9 @@ class _LoginScreenState extends State<LoginScreen> {
                       children: [
                         Text(
                           '¿No tienes cuenta?',
-                          style: AppTextStyles.bodyMd
-                              .copyWith(color: AppColors.onSurfaceVariant),
+                          style: AppTextStyles.bodyMd.copyWith(
+                            color: AppColors.onSurfaceVariant,
+                          ),
                         ),
                         TextButton(
                           onPressed: widget.onCreateAccount,
@@ -178,8 +180,9 @@ class _ResetPasswordDialog extends StatefulWidget {
 
 class _ResetPasswordDialogState extends State<_ResetPasswordDialog> {
   final _formKey = GlobalKey<FormState>();
-  late final TextEditingController _controller =
-      TextEditingController(text: widget.initialEmail);
+  late final TextEditingController _controller = TextEditingController(
+    text: widget.initialEmail,
+  );
 
   @override
   void dispose() {
@@ -204,8 +207,9 @@ class _ResetPasswordDialogState extends State<_ResetPasswordDialog> {
           children: [
             Text(
               'Escribe tu correo y te enviaremos un enlace para restablecer tu contraseña.',
-              style: AppTextStyles.bodyMd
-                  .copyWith(color: AppColors.onSurfaceVariant),
+              style: AppTextStyles.bodyMd.copyWith(
+                color: AppColors.onSurfaceVariant,
+              ),
             ),
             const SizedBox(height: AppSpacing.md),
             TextFormField(
@@ -229,10 +233,7 @@ class _ResetPasswordDialogState extends State<_ResetPasswordDialog> {
           onPressed: () => Navigator.of(context).pop(),
           child: const Text('Cancelar'),
         ),
-        FilledButton(
-          onPressed: _enviar,
-          child: const Text('Enviar'),
-        ),
+        FilledButton(onPressed: _enviar, child: const Text('Enviar')),
       ],
     );
   }

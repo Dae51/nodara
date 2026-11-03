@@ -24,21 +24,16 @@ enum EstadoPostulacion {
   final String label;
 
   bool get esActiva => {
-        pendiente,
-        enRevision,
-        entrevista,
-        listaEspera,
-        aceptado,
-        confirmado,
-        enCurso,
-      }.contains(this);
+    pendiente,
+    enRevision,
+    entrevista,
+    listaEspera,
+    aceptado,
+    confirmado,
+    enCurso,
+  }.contains(this);
 
-  bool get esCerrada => {
-        rechazado,
-        noShow,
-        retirado,
-        cancelado,
-      }.contains(this);
+  bool get esCerrada => {rechazado, noShow, retirado, cancelado}.contains(this);
 
   bool get esTerminal => esCerrada || this == completado;
 
@@ -47,15 +42,15 @@ enum EstadoPostulacion {
   /// Estados que la organización puede seleccionar desde el estado actual.
   /// La fuente de datos vuelve a validar esta transición antes de escribir.
   List<EstadoPostulacion> get siguientes => switch (this) {
-        pendiente => [enRevision, rechazado, retirado],
-        enRevision => [entrevista, aceptado, listaEspera, rechazado, retirado],
-        entrevista => [aceptado, listaEspera, rechazado, retirado],
-        listaEspera => [aceptado, rechazado, retirado],
-        aceptado => [confirmado, enCurso, cancelado, retirado],
-        confirmado => [enCurso, cancelado, retirado],
-        enCurso => [completado, noShow, cancelado],
-        rechazado || completado || noShow || retirado || cancelado => const [],
-      };
+    pendiente => [enRevision, rechazado, retirado],
+    enRevision => [entrevista, aceptado, listaEspera, rechazado, retirado],
+    entrevista => [aceptado, listaEspera, rechazado, retirado],
+    listaEspera => [aceptado, rechazado, retirado],
+    aceptado => [confirmado, enCurso, cancelado, retirado],
+    confirmado => [enCurso, cancelado, retirado],
+    enCurso => [completado, noShow, cancelado],
+    rechazado || completado || noShow || retirado || cancelado => const [],
+  };
 }
 
 class ApplicationStatusChange {
@@ -68,7 +63,11 @@ class ApplicationStatusChange {
 
   factory ApplicationStatusChange.fromMap(Map<String, Object?> map) =>
       ApplicationStatusChange(
-        estado: readEnum(EstadoPostulacion.values, map['estado'], EstadoPostulacion.pendiente),
+        estado: readEnum(
+          EstadoPostulacion.values,
+          map['estado'],
+          EstadoPostulacion.pendiente,
+        ),
         en: readDate(map['en']) ?? DateTime.now(),
         actorId: readString(map['actorId']),
         motivo: map['motivo'] is String ? map['motivo'] as String : null,
@@ -80,11 +79,11 @@ class ApplicationStatusChange {
   final String? motivo;
 
   Map<String, Object?> toMap() => {
-        'estado': estado.name,
-        'en': en,
-        'actorId': actorId,
-        'motivo': motivo,
-      };
+    'estado': estado.name,
+    'en': en,
+    'actorId': actorId,
+    'motivo': motivo,
+  };
 }
 
 /// Postulación de un voluntario a una [Opportunity].
@@ -125,8 +124,9 @@ class Application {
       imagenUrl: readString(map['imagenUrl']),
       horario: readString(map['horario']),
       horasEstimadas: readInt(map['horasEstimadas']),
-      horasAcreditadas:
-          map['horasAcreditadas'] is num ? readInt(map['horasAcreditadas']) : null,
+      horasAcreditadas: map['horasAcreditadas'] is num
+          ? readInt(map['horasAcreditadas'])
+          : null,
       estado: readEnum(
         EstadoPostulacion.values,
         map['estado'],
@@ -163,27 +163,26 @@ class Application {
   final List<ApplicationStatusChange> historial;
 
   /// Horas que cuentan para el perfil (solo si está completada).
-  int get horasQueCuentan => estado.cuentaHoras
-      ? (horasAcreditadas ?? horasEstimadas)
-      : 0;
+  int get horasQueCuentan =>
+      estado.cuentaHoras ? (horasAcreditadas ?? horasEstimadas) : 0;
 
   Map<String, Object?> toMap() => {
-        'opportunityId': opportunityId,
-        'oportunidadTitulo': oportunidadTitulo,
-        'orgId': orgId,
-        'orgNombre': orgNombre,
-        'userId': userId,
-        'causa': causa.name,
-        'imagenUrl': imagenUrl,
-        'horario': horario,
-        'horasEstimadas': horasEstimadas,
-        'horasAcreditadas': horasAcreditadas,
-        'estado': estado.name,
-        'motivo': motivo,
-        'creadaEn': creadaEn,
-        'actualizadaEn': actualizadaEn,
-        'historial': historial.map((item) => item.toMap()).toList(),
-      };
+    'opportunityId': opportunityId,
+    'oportunidadTitulo': oportunidadTitulo,
+    'orgId': orgId,
+    'orgNombre': orgNombre,
+    'userId': userId,
+    'causa': causa.name,
+    'imagenUrl': imagenUrl,
+    'horario': horario,
+    'horasEstimadas': horasEstimadas,
+    'horasAcreditadas': horasAcreditadas,
+    'estado': estado.name,
+    'motivo': motivo,
+    'creadaEn': creadaEn,
+    'actualizadaEn': actualizadaEn,
+    'historial': historial.map((item) => item.toMap()).toList(),
+  };
 
   Application copyWith({
     String? id,
@@ -192,23 +191,22 @@ class Application {
     String? motivo,
     DateTime? actualizadaEn,
     List<ApplicationStatusChange>? historial,
-  }) =>
-      Application(
-        id: id ?? this.id,
-        opportunityId: opportunityId,
-        oportunidadTitulo: oportunidadTitulo,
-        orgId: orgId,
-        orgNombre: orgNombre,
-        userId: userId,
-        causa: causa,
-        imagenUrl: imagenUrl,
-        horario: horario,
-        horasEstimadas: horasEstimadas,
-        horasAcreditadas: horasAcreditadas ?? this.horasAcreditadas,
-        estado: estado ?? this.estado,
-        motivo: motivo ?? this.motivo,
-        creadaEn: creadaEn,
-        actualizadaEn: actualizadaEn ?? this.actualizadaEn,
-        historial: historial ?? this.historial,
-      );
+  }) => Application(
+    id: id ?? this.id,
+    opportunityId: opportunityId,
+    oportunidadTitulo: oportunidadTitulo,
+    orgId: orgId,
+    orgNombre: orgNombre,
+    userId: userId,
+    causa: causa,
+    imagenUrl: imagenUrl,
+    horario: horario,
+    horasEstimadas: horasEstimadas,
+    horasAcreditadas: horasAcreditadas ?? this.horasAcreditadas,
+    estado: estado ?? this.estado,
+    motivo: motivo ?? this.motivo,
+    creadaEn: creadaEn,
+    actualizadaEn: actualizadaEn ?? this.actualizadaEn,
+    historial: historial ?? this.historial,
+  );
 }
