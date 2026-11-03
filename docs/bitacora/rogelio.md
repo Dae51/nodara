@@ -62,6 +62,14 @@ código de la muestra. Ese código fijo pertenece solo a la evidencia temporal;
 la app genera códigos aleatorios. La prueba de emisión con Fake exige menos de
 3 segundos. No se afirma que ese tiempo esté medido con Firebase real.
 
+Compilación Android: `flutter build apk --debug --dart-define=NODARA_FAKE=true
+--no-pub` completó correctamente y generó `app-debug.apk`. La primera ejecución
+preparó las dependencias nativas que faltaban (Android SDK Platform 35 y CMake
+3.22.1). No se alteraron archivos Gradle, manifests ni configuraciones compartidas.
+No había un dispositivo conectado: compilar el APK no equivale a probar la hoja
+de compartir del sistema en un teléfono. La captura del perfil usa el harness
+de widgets a 360 px con texto 1.3 y una fuente local para la evidencia.
+
 ## Integración que corresponde a los otros dueños
 
 1. **Jhonnatan:** importar FirestoreCertificateDataSource en AppDependencies y
