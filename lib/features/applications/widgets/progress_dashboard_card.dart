@@ -1,12 +1,19 @@
+// Resumen visual de horas que MyApplicationsScreen muestra si el usuario tiene meta.
+// Guía de estudio R3: Javier Alejandro Paniagua Morán · carné 20245194.
+// Los cálculos y la tarjeta vienen de la base; R3 ajustó distribución y etiqueta
+// Activas.
+// Referencia del aporte: docs/bitacora/javier.md y commit f0b6416.
+// Índice: Horas y porcentaje; Barra de progreso; Contadores.
+
 import 'package:flutter/material.dart';
 
 import 'package:nodara/core/widgets/stat_pill.dart';
 import 'package:nodara/theme/app_colors.dart';
 import 'package:nodara/theme/app_theme.dart';
 
-/// Tarjeta amarilla de progreso de horas. Todos los números llegan ya
-/// calculados desde `ApplicationsProvider` (getters).
+/// Representa métricas ya calculadas por los getters de ApplicationsProvider.
 class ProgressDashboardCard extends StatelessWidget {
+  // required obliga a pasar el dato; final impide reasignar el campo después.
   const ProgressDashboardCard({
     super.key,
     required this.horasCompletadas,
@@ -21,11 +28,14 @@ class ProgressDashboardCard extends StatelessWidget {
   final int horasCompletadas;
   final int horasRequeridas;
   final int horasFaltantes;
+  // progreso es fracción 0..1; progresoPorcentaje es el entero que se muestra.
+  // activas/acreditadas cuentan postulaciones, no horas.
   final double progreso;
   final int progresoPorcentaje;
   final int activas;
   final int acreditadas;
 
+  /// Devuelve horas, barra y contadores; el cálculo ya llegó desde el Provider.
   @override
   Widget build(BuildContext context) {
     return Container(
@@ -48,6 +58,8 @@ class ProgressDashboardCard extends StatelessWidget {
           Column(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
+              // SECCIÓN: Horas y porcentaje
+              // Wrap permite que encabezado e insignia salten de línea.
               Wrap(
                 spacing: AppSpacing.sm,
                 runSpacing: AppSpacing.sm,
@@ -131,6 +143,8 @@ class ProgressDashboardCard extends StatelessWidget {
                 ),
               ),
               const SizedBox(height: AppSpacing.sm),
+              // SECCIÓN: Barra de progreso
+              // progreso es fracción 0..1; el porcentaje es solo texto.
               ClipRRect(
                 borderRadius: BorderRadius.circular(AppRadius.pill),
                 child: Container(
@@ -141,6 +155,8 @@ class ProgressDashboardCard extends StatelessWidget {
                   child: Align(
                     alignment: Alignment.centerLeft,
                     child: FractionallySizedBox(
+                      // El ternario deja una marca mínima con cero horas;
+                      // es un detalle visual, no cambia el progreso del Provider.
                       widthFactor: progreso == 0 ? 0.001 : progreso,
                       child: Container(color: AppColors.primary),
                     ),
@@ -153,6 +169,8 @@ class ProgressDashboardCard extends StatelessWidget {
                 runSpacing: 8,
                 crossAxisAlignment: WrapCrossAlignment.center,
                 children: [
+                  // SECCIÓN: Contadores
+                  // Wrap mantiene legibles activas, acreditadas y horas faltantes.
                   StatPill(
                     label: 'Activas: $activas',
                     showDot: true,

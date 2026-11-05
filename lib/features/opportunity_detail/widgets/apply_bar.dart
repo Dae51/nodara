@@ -1,10 +1,13 @@
+// Barra inferior de OpportunityDetailScreen: horas y acción de postulación.
 import 'package:flutter/material.dart';
 
 import 'package:nodara/theme/app_colors.dart';
 import 'package:nodara/theme/app_shadows.dart';
 import 'package:nodara/theme/app_theme.dart';
 
+/// Presenta horas estimadas y delega el toque a onApply, recibido del detalle.
 class ApplyBar extends StatelessWidget {
+  // required obliga a pasar el dato; final impide reasignar el campo después.
   const ApplyBar({
     super.key,
     required this.hours,
@@ -14,10 +17,13 @@ class ApplyBar extends StatelessWidget {
   });
 
   final int hours;
+  // hasApplied indica una solicitud no retirada; isBusy indica carga o envío.
   final bool hasApplied;
+  // ? permite ausencia de acción: null deshabilita el botón sin guardar nada.
   final VoidCallback? onApply;
   final bool isBusy;
 
+  /// Devuelve horas y botón; usa isBusy y hasApplied para elegir su estado visual.
   @override
   Widget build(BuildContext context) {
     return Container(
@@ -25,6 +31,8 @@ class ApplyBar extends StatelessWidget {
         color: AppColors.surfaceContainerLowest,
         boxShadow: AppShadows.bottomBar,
       ),
+      // SafeArea protege la barra de la navegación del sistema; top:false
+      // evita margen superior porque esta pieza está al pie de la pantalla.
       child: SafeArea(
         top: false,
         child: Padding(
@@ -34,6 +42,8 @@ class ApplyBar extends StatelessWidget {
           ),
           child: Row(
             children: [
+              // SECCIÓN: Horas estimadas
+              // Llegan de la convocatoria; aquí no se suman horas acreditadas.
               Column(
                 mainAxisSize: MainAxisSize.min,
                 crossAxisAlignment: CrossAxisAlignment.start,
@@ -66,8 +76,12 @@ class ApplyBar extends StatelessWidget {
                 ],
               ),
               const SizedBox(width: AppSpacing.md),
+              // SECCIÓN: Botón de postulación
+              // Expanded entrega al botón el ancho sobrante junto a las horas.
               Expanded(
                 child: FilledButton(
+                  // El ternario elige null mientras carga/envía. En otro caso,
+                  // onApply abre confirmación o la lista, según decida la pantalla.
                   onPressed: isBusy ? null : onApply,
                   style: FilledButton.styleFrom(
                     backgroundColor: hasApplied
@@ -86,6 +100,7 @@ class ApplyBar extends StatelessWidget {
                         size: 20,
                       ),
                       const SizedBox(width: AppSpacing.xs),
+                      // Flexible deja partir la etiqueta sin desplazar el icono.
                       Flexible(
                         child: Text(
                           isBusy

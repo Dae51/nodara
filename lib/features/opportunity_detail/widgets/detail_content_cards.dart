@@ -1,3 +1,4 @@
+// Contenido del detalle: descripción, requisitos, beneficios, mapa y testimonio.
 import 'package:flutter/material.dart';
 import 'package:url_launcher/url_launcher.dart';
 
@@ -12,16 +13,21 @@ import 'package:nodara/features/donations/widgets/location_map_view.dart';
 import 'package:nodara/theme/app_colors.dart';
 import 'package:nodara/theme/app_theme.dart';
 
+/// Muestra la descripción recibida y un párrafo fijo heredado del diseño base.
 class DetailAboutSection extends StatelessWidget {
+  // required obliga a pasar el dato; final impide reasignar el campo después.
   const DetailAboutSection({super.key, required this.opportunity});
 
   final Opportunity opportunity;
 
+  /// Devuelve la descripción de opportunity junto al párrafo fijo de capacitación.
   @override
   Widget build(BuildContext context) {
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
+        // SECCIÓN: Descripción
+        // El primer párrafo viene del modelo; el segundo es texto fijo de la base.
         const SectionHeader(title: 'Sobre el voluntariado'),
         const SizedBox(height: AppSpacing.sm),
         Text(
@@ -44,11 +50,13 @@ class DetailAboutSection extends StatelessWidget {
   }
 }
 
+/// Convierte requisitos en filas informativas; no valida al usuario.
 class DetailRequirementsCard extends StatelessWidget {
   const DetailRequirementsCard({super.key, required this.requisitos});
 
   final List<String> requisitos;
 
+  /// Devuelve una tarjeta con una fila por cada requisito recibido.
   @override
   Widget build(BuildContext context) {
     return AppCard(
@@ -61,6 +69,8 @@ class DetailRequirementsCard extends StatelessWidget {
             icon: Icons.checklist,
           ),
           const SizedBox(height: AppSpacing.md),
+          // SECCIÓN: Requisitos
+          // Este for agrega una fila por texto; final fija el valor de cada vuelta.
           for (final requirement in requisitos)
             Padding(
               padding: const EdgeInsets.only(bottom: AppSpacing.sm),
@@ -82,6 +92,7 @@ class DetailRequirementsCard extends StatelessWidget {
                     ),
                   ),
                   const SizedBox(width: AppSpacing.sm),
+                  // Expanded da al requisito el espacio restante junto al check.
                   Expanded(
                     child: Text(requirement, style: AppTextStyles.bodyMd),
                   ),
@@ -94,11 +105,13 @@ class DetailRequirementsCard extends StatelessWidget {
   }
 }
 
+/// Presenta beneficios y traduce iconKey con iconFromKey del equipo.
 class DetailBenefitsCard extends StatelessWidget {
   const DetailBenefitsCard({super.key, required this.beneficios});
 
   final List<Benefit> beneficios;
 
+  /// Devuelve una tarjeta con icono y textos de cada beneficio recibido.
   @override
   Widget build(BuildContext context) {
     return AppCard(
@@ -112,6 +125,8 @@ class DetailBenefitsCard extends StatelessWidget {
             accent: AppColors.secondary,
           ),
           const SizedBox(height: AppSpacing.md),
+          // SECCIÓN: Beneficios
+          // Cada beneficio trae iconKey, título y subtítulo desde el modelo.
           for (final benefit in beneficios)
             Padding(
               padding: const EdgeInsets.only(bottom: AppSpacing.sm),
@@ -153,23 +168,32 @@ class DetailBenefitsCard extends StatelessWidget {
   }
 }
 
+/// Muestra coordenadas en LocationMapView y permite abrir Google Maps.
 class DetailMapCard extends StatelessWidget {
   const DetailMapCard({super.key, required this.opportunity});
 
   final Opportunity opportunity;
 
+  // SECCIÓN: Ruta al punto de encuentro
+  /// Construye una URL con las coordenadas y delega abrirla a url_launcher.
+  /// Recibe context para avisar si devuelve false; el Future no devuelve datos.
   Future<void> _openRoute(BuildContext context) async {
+    // 1. Usa lat/lng de esta convocatoria para buscar el punto en Google Maps.
     final uri = Uri.parse(
       'https://www.google.com/maps/search/?api=1&query=${opportunity.lat},${opportunity.lng}',
     );
+    // 2. await espera la respuesta al abrir una aplicación externa.
     final launched = await launchUrl(uri, mode: LaunchMode.externalApplication);
+    // 3. Avisa solo si no se abrió y context sigue montado tras la espera.
     if (!launched && context.mounted) {
       showAppToast(context, 'No se pudo abrir Google Maps');
     }
   }
 
+  /// Devuelve dirección, mapa compartido y botón que llama a _openRoute.
   @override
   Widget build(BuildContext context) {
+    // Ternario: usa ubicación como alternativa cuando no se recibió dirección.
     final direccion = opportunity.direccion.isEmpty
         ? opportunity.ubicacion
         : opportunity.direccion;
@@ -192,6 +216,7 @@ class DetailMapCard extends StatelessWidget {
                 ),
               ),
               TextButton.icon(
+                // El toque en Ver ruta inicia la apertura externa de coordenadas.
                 onPressed: () => _openRoute(context),
                 icon: const Icon(Icons.arrow_forward, size: 14),
                 label: const Text('Ver ruta'),
@@ -208,6 +233,7 @@ class DetailMapCard extends StatelessWidget {
             child: SizedBox(
               height: 160,
               width: double.infinity,
+              // El mapa embebido es un componente compartido del módulo Donaciones.
               child: LocationMapView(
                 lat: opportunity.lat,
                 lng: opportunity.lng,
@@ -228,9 +254,12 @@ class DetailMapCard extends StatelessWidget {
   }
 }
 
+/// Presenta un testimonio fijo de la base, sin consulta al Repository.
 class DetailTestimonialCard extends StatelessWidget {
+  /// Crea este componente visual sin datos externos.
   const DetailTestimonialCard({super.key});
 
+  /// Devuelve avatar, nombre y testimonio fijos de la base.
   @override
   Widget build(BuildContext context) {
     return Container(
@@ -244,6 +273,8 @@ class DetailTestimonialCard extends StatelessWidget {
         children: [
           Row(
             children: [
+              // SECCIÓN: Testimonio
+              // Avatar y texto son fijos; no son una reseña leída desde Firestore.
               const RemoteImage(
                 url: RemoteAssets.testimonialAvatar,
                 width: 40,

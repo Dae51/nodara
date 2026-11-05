@@ -1,3 +1,9 @@
+// Tarjeta de cada elemento que MyApplicationsScreen recibe del Provider.
+// Guía de estudio R3: Javier Alejandro Paniagua Morán · carné 20245194.
+// R3 amplió estados y motivos legibles y conectó las acciones sobre la tarjeta base.
+// Referencia del aporte: docs/bitacora/javier.md y commit f0b6416.
+// Índice: Estado y horas; Imagen y organización; _InfoBox; ApplicationActions.
+
 import 'package:flutter/material.dart';
 
 import 'package:nodara/core/utils/icon_mapper.dart';
@@ -9,8 +15,9 @@ import 'package:nodara/theme/app_colors.dart';
 import 'package:nodara/theme/app_shadows.dart';
 import 'package:nodara/theme/app_theme.dart';
 
-/// Tarjeta de una postulación en "Mis Postulaciones".
+/// Presenta una Application y pasa onWithdraw a ApplicationActions.
 class ApplicationCard extends StatelessWidget {
+  // required obliga a pasar el dato; final impide reasignar el campo después.
   const ApplicationCard({
     super.key,
     required this.application,
@@ -20,6 +27,7 @@ class ApplicationCard extends StatelessWidget {
   final Application application;
   final VoidCallback onWithdraw;
 
+  /// Devuelve estado, horas, imagen y contexto; delega botones a ApplicationActions.
   @override
   Widget build(BuildContext context) {
     return Container(
@@ -32,6 +40,8 @@ class ApplicationCard extends StatelessWidget {
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
+          // SECCIÓN: Estado y horas
+          // Wrap pasa una insignia a otra línea si texto y horas no caben juntos.
           Wrap(
             spacing: AppSpacing.sm,
             runSpacing: AppSpacing.sm,
@@ -44,6 +54,8 @@ class ApplicationCard extends StatelessWidget {
           Row(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
+              // SECCIÓN: Imagen y organización
+              // Se usan los datos copiados en Application por el Repository.
               RemoteImage(
                 url: application.imagenUrl,
                 width: 56,
@@ -52,6 +64,7 @@ class ApplicationCard extends StatelessWidget {
                 borderRadius: BorderRadius.circular(AppRadius.sm),
               ),
               const SizedBox(width: AppSpacing.sm),
+              // Expanded ocupa el ancho restante al lado de la imagen.
               Expanded(
                 child: Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
@@ -74,6 +87,7 @@ class ApplicationCard extends StatelessWidget {
                           color: AppColors.primary,
                         ),
                         const SizedBox(width: 4),
+                        // Flexible deja partir el nombre de la organización.
                         Flexible(
                           child: Text(
                             application.orgNombre,
@@ -92,6 +106,8 @@ class ApplicationCard extends StatelessWidget {
           const SizedBox(height: AppSpacing.sm),
           _InfoBox(application: application),
           const SizedBox(height: AppSpacing.sm),
+          // SECCIÓN: Botones
+          // onWithdraw viene de la pantalla y abre confirmación cuando se pulsa.
           ApplicationActions(application: application, onWithdraw: onWithdraw),
         ],
       ),
@@ -99,14 +115,19 @@ class ApplicationCard extends StatelessWidget {
   }
 }
 
+/// Traduce el estado recibido a icono, colores y etiqueta legible.
 class _StatusBadge extends StatelessWidget {
   const _StatusBadge({required this.estado});
 
   final EstadoPostulacion estado;
 
+  /// Devuelve una insignia con icono y texto para reconocer el estado sin depender del
+  /// color.
   @override
   Widget build(BuildContext context) {
     // El estado se comunica con ícono + texto, no solo con color.
+    // final impide reasignar; (icon, bg, fg) descompone una tupla
+    // elegida por switch para usar icono, fondo y texto del mismo estado.
     final (icon, bg, fg) = switch (estado) {
       EstadoPostulacion.aceptado => (
         Icons.autorenew,
@@ -166,11 +187,13 @@ class _StatusBadge extends StatelessWidget {
   }
 }
 
+/// Distingue horas proyectadas y acreditadas mediante StatPill del equipo.
 class _RewardPill extends StatelessWidget {
   const _RewardPill({required this.application});
 
   final Application application;
 
+  /// Devuelve un StatPill con horas y colores elegidos según el estado.
   @override
   Widget build(BuildContext context) {
     final estado = application.estado;
@@ -185,6 +208,7 @@ class _RewardPill extends StatelessWidget {
     };
     return StatPill(
       label: label,
+      // Ternarios: elige colores según completada, pendiente u otro estado.
       background: completed
           ? AppColors.secondaryContainer
           : pending
@@ -201,14 +225,18 @@ class _RewardPill extends StatelessWidget {
   }
 }
 
-/// Caja de contexto: el texto se deriva del estado (no se guarda).
+/// Deriva mensaje y motivo del estado recibido, sin guardar nuevos datos.
 class _InfoBox extends StatelessWidget {
   const _InfoBox({required this.application});
 
   final Application application;
 
+  /// Devuelve el mensaje que corresponde al estado y al motivo de application.
   @override
   Widget build(BuildContext context) {
+    // SECCIÓN: Mensaje de estado y motivo
+    // ?? usa el mensaje alternativo solo si motivo es null. El texto se deriva
+    // del estado de Application; no se guarda una segunda copia del mensaje.
     final (icon, title, subtitle) = switch (application.estado) {
       EstadoPostulacion.pendiente => (
         Icons.hourglass_top,

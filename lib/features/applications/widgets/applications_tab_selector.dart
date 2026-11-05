@@ -1,10 +1,17 @@
+// Selector que MyApplicationsScreen usa para elegir qué grupo mostrar.
+// Guía de estudio R3: Javier Alejandro Paniagua Morán · carné 20245194.
+// R3 cambió la tercera pestaña a Cerradas y ajustó texto y contador sobre la base.
+// Referencia del aporte: docs/bitacora/javier.md y commit f0b6416.
+// Índice: Pestañas; _Tab.
+
 import 'package:flutter/material.dart';
 
 import 'package:nodara/theme/app_colors.dart';
 import 'package:nodara/theme/app_theme.dart';
 
-/// Pestañas Activas / Completadas / Cerradas (rechazadas y retiradas).
+/// Emite índices 0, 1 o 2 al padre; recibe la selección y contadores actuales.
 class ApplicationsTabSelector extends StatelessWidget {
+  // required obliga a pasar el dato; final impide reasignar el campo después.
   const ApplicationsTabSelector({
     super.key,
     required this.selected,
@@ -20,6 +27,7 @@ class ApplicationsTabSelector extends StatelessWidget {
   final int closedCount;
   final ValueChanged<int> onChanged;
 
+  /// Devuelve las tres pestañas con sus contadores y callbacks por índice.
   @override
   Widget build(BuildContext context) {
     return Container(
@@ -30,6 +38,9 @@ class ApplicationsTabSelector extends StatelessWidget {
       ),
       child: Row(
         children: [
+          // SECCIÓN: Pestañas
+          // Cada onTap envía su índice a onChanged del padre; allí setState
+          // cambia la selección. Este widget no filtra ni guarda postulaciones.
           _Tab(
             label: 'Activas',
             count: activeCount,
@@ -54,21 +65,24 @@ class ApplicationsTabSelector extends StatelessWidget {
   }
 }
 
+/// Dibuja una pestaña con contador; onTap avisa al padre al seleccionarla.
 class _Tab extends StatelessWidget {
   const _Tab({
     required this.label,
     required this.isSelected,
     required this.onTap,
-    this.count,
+    required this.count,
   });
 
   final String label;
-  final int? count;
+  final int count;
   final bool isSelected;
   final VoidCallback onTap;
 
+  /// Devuelve una pestaña animada que llama onTap cuando el usuario la toca.
   @override
   Widget build(BuildContext context) {
+    // Expanded asigna a cada pestaña la misma parte del ancho disponible.
     return Expanded(
       child: GestureDetector(
         onTap: onTap,
@@ -79,11 +93,13 @@ class _Tab extends StatelessWidget {
           alignment: Alignment.center,
           padding: const EdgeInsets.symmetric(vertical: 10),
           decoration: BoxDecoration(
+            // Ternario: fondo visible solo para la pestaña seleccionada.
             color: isSelected
                 ? AppColors.surfaceContainerLowest
                 : Colors.transparent,
             borderRadius: BorderRadius.circular(AppRadius.sm),
           ),
+          // Wrap permite poner contador y etiqueta en líneas distintas.
           child: Wrap(
             alignment: WrapAlignment.center,
             crossAxisAlignment: WrapCrossAlignment.center,
@@ -98,28 +114,24 @@ class _Tab extends StatelessWidget {
                       : AppColors.onSurfaceVariant,
                 ),
               ),
-              if (count != null) ...[
-                Container(
-                  padding: const EdgeInsets.symmetric(
-                    horizontal: 6,
-                    vertical: 1,
-                  ),
-                  decoration: BoxDecoration(
+              // El contador siempre se muestra, incluso cuando vale cero.
+              Container(
+                padding: const EdgeInsets.symmetric(horizontal: 6, vertical: 1),
+                decoration: BoxDecoration(
+                  color: isSelected
+                      ? AppColors.primaryFixed
+                      : AppColors.surfaceContainer,
+                  borderRadius: BorderRadius.circular(AppRadius.pill),
+                ),
+                child: Text(
+                  '$count',
+                  style: AppTextStyles.labelSm.copyWith(
                     color: isSelected
-                        ? AppColors.primaryFixed
-                        : AppColors.surfaceContainer,
-                    borderRadius: BorderRadius.circular(AppRadius.pill),
-                  ),
-                  child: Text(
-                    '$count',
-                    style: AppTextStyles.labelSm.copyWith(
-                      color: isSelected
-                          ? AppColors.primary
-                          : AppColors.onSurfaceVariant,
-                    ),
+                        ? AppColors.primary
+                        : AppColors.onSurfaceVariant,
                   ),
                 ),
-              ],
+              ),
             ],
           ),
         ),
